@@ -1,5 +1,5 @@
 container:
-  image: ubuntu:latest
+  image: manjaro:latest
   cpu: 16
   memory: 64G
 
