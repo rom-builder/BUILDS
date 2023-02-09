@@ -1,6 +1,6 @@
 container:
   image: ubuntu:latest
-  cpu: 16
+  cpu: 8
   memory: 32G
 
 task:
