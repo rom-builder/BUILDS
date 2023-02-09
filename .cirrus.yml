@@ -4,4 +4,4 @@ container:
   memory: 64G
 
 task:
-  script: build.sh
+  script: sh build.sh
