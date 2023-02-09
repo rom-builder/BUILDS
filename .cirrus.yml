@@ -1,7 +1,7 @@
 container:
   image: ubuntu:latest
-  cpu: 8
-  memory: 32G
+  cpu: 32
+  memory: 64G
 
 task:
   script: build.sh
