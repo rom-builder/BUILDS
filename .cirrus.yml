@@ -1,6 +1,6 @@
 container:
   image: manjaro:latest
-  cpu: 16
+  cpu: 32
   memory: 64G
 
 task:
