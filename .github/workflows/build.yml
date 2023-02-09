@@ -1,3 +1,4 @@
+name: ROM Builder
 on:
   workflow_dispatch:
 
@@ -5,4 +6,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - run: sh bash.sh
+      - uses: actions/checkout@v3
+      - run: sh builder.sh
+      
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "ROM Build"
+          files: |
+            out/**/**/*.zip
