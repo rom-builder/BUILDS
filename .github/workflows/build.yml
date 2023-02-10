@@ -73,7 +73,7 @@ jobs:
     needs: Build_rom_vanilla
     steps:
       - name: Build Gapps
-        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GAPPS=true && mka bacon | tee log.txt
+        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GMS=true && mka bacon | tee log.txt
         
   Release:
     runs-on: self-hosted
