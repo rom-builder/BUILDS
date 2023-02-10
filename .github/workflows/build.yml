@@ -1,6 +1,10 @@
 name: ROM Builder
 on:
-  workflow_dispatch:
+  workflow_dispatch
+  
+concurrency:
+  group: ${{  github.ref }}
+  cancel-in-progress: true
 
 jobs:
   Repo_git:
