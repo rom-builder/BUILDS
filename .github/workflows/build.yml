@@ -4,11 +4,37 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted
     steps:
-      - uses: actions/checkout@v3
-      - run: sh builder.sh
+      - name: Setup git and install repo
+        run: |
+          git config --global user.email "rabil@techie.com"
+          git config --global user.name "Mohammed Rabil"
+          sudo apt-get update -y && sudo apt-get install repo -y
+      - name: Install requirerd dependencies
+        run: sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip openssl libssl-dev fontconfig -y
+        
+      - name: Clone Device Tree
+        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince
+        
+      - name: Clone Vendor Tree
+        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince
+        
+      - name: Clone Kernel Tree
+        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince
       
+      - name: Fetch clang
+        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b
+        
+      - name: Setup source
+        run: repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault
+        
+      - name: Sync source
+        run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune --force-sync -j8
+        
+      - name: Build Gapps
+        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GAPPS=true && mka bacon | tee log.txt
+        
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
