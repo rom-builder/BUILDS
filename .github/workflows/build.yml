@@ -83,5 +83,6 @@ jobs:
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: out/target/product/vince/*.zip
+            file: out/target/product/vince/riceDroid*
             overwrite: false
+            file_glob: true
