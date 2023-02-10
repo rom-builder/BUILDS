@@ -84,6 +84,6 @@ jobs:
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
             file: out/target/product/vince/riceDroid*
-            repo_name: Vince-RiceDroid
+            repo_name: rom-builder/Vince-RiceDroid
             overwrite: false
             file_glob: true
