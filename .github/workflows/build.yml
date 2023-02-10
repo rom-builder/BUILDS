@@ -24,28 +24,28 @@ jobs:
     needs: Repo_git
     steps:
       - name: Clone Device Tree
-        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || { cd device/xiaomi/vince && git fetch && git pull }
+        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || ( cd device/xiaomi/vince && git fetch && git pull )
         
   Vendor_tree:
     runs-on: self-hosted
     needs: Repo_git
     steps:
       - name: Clone Vendor Tree
-        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || { cd vendor/xiaomi/vince && git fetch && git pull }
+        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || ( cd vendor/xiaomi/vince && git fetch && git pull )
       
   Kernel_tree:
     runs-on: self-hosted
     needs: Repo_git
     steps:
       - name: Clone Kernel Tree
-        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || { cd kernel/xiaomi/vince && git fetch && git pull }
+        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || ( cd kernel/xiaomi/vince && git fetch && git pull )
       
   Clang:
     runs-on: self-hosted
     needs: Repo_git
     steps:
       - name: Fetch clang
-        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || { cd prebuilts/clang/host/linux-x86/clang-r468909b && git fetch && git pull }
+        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || ( cd prebuilts/clang/host/linux-x86/clang-r468909b && git fetch && git pull )
         
   Setup_source:
     runs-on: self-hosted
