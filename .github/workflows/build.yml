@@ -72,11 +72,9 @@ jobs:
     runs-on: self-hosted
     needs: Build_rom
     steps:
-      - uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "ROM Build"
-          files: |
-            out/**/**/*.zip
+        - name: Upload modules to release
+          uses: svenstaro/upload-release-action@v2
+          with:
+            repo_token: ${{ secrets.GITHUB_TOKEN }}
+            file: ./out/target/product/vince/*.zip
+            overwrite: false
