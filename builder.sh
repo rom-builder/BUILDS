@@ -1,9 +1,9 @@
 #! /bin/sh
 
-sudo mkdir -p ~/bin && sudo curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && sudo chmod a+x ~/bin/repo && echo 'export PATH=~/bin:$PATH' >> ~/.bashrc && source ~/.bashrc
+# sudo mkdir -p ~/bin && sudo curl https://storage.googleapis.com/git-repo-downloads/repo > ~/bin/repo && sudo chmod a+x ~/bin/repo && echo 'export PATH=~/bin:$PATH' >> ~/.bashrc && source ~/.bashrc
 
 # Check https://source.android.com/docs/setup/start/initializing
-sudo apt-get update -y && sudo apt-get install git -y && sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig -y
+sudo apt-get update -y && sudo apt-get install git repo -y && sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip fontconfig -y
 
 git config --global user.email "rabil@techie.com"
 git config --global user.name "Mohammed Rabil"
