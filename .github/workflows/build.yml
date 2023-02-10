@@ -3,38 +3,75 @@ on:
   workflow_dispatch:
 
 jobs:
-  build:
+  Repo_git:
     runs-on: self-hosted
     steps:
       - name: Setup git and install repo
         run: |
           git config --global user.email "rabil@techie.com"
           git config --global user.name "Mohammed Rabil"
+          git config --global pull.rebase true
           sudo apt-get update -y && sudo apt-get install repo -y
+          
+  depends:
+    runs-on: self-hosted
+    steps:
       - name: Install requirerd dependencies
         run: sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip openssl libssl-dev fontconfig -y
         
+  Device_tree:
+    runs-on: self-hosted
+    needs: Repo_git
+    steps:
       - name: Clone Device Tree
-        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || echo "Already done"
+        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || cd device/xiaomi/vince && git fetch && git pull
         
+  Vendor_tree:
+    runs-on: self-hosted
+    needs: Repo_git
+    steps:
       - name: Clone Vendor Tree
-        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || echo "Already done"
-        
-      - name: Clone Kernel Tree
-        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || echo "Already done"
+        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || cd vendor/xiaomi/vince && git fetch && git pull
       
+  Kernel_tree:
+    runs-on: self-hosted
+    needs: Repo_git
+    steps:
+      - name: Clone Kernel Tree
+        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || cd kernel/xiaomi/vince && git fetch && git pull
+      
+  Clang:
+    runs-on: self-hosted
+    needs: Repo_git
+    steps:
       - name: Fetch clang
-        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || echo "Already done"
+        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || cd prebuilts/clang/host/linux-x86/clang-r468909b && git fetch && git pull
         
+  Setup_source:
+    runs-on: self-hosted
+    needs: [Repo_git]
+    steps:
       - name: Setup source
         run: repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault || echo "Already done"
         
+  Sync_source:
+    runs-on: self-hosted
+    needs: Setup_source
+    steps:
       - name: Sync source
-        run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune --force-sync -j8
+        run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune -j8
         
+  Build_rom:
+    runs-on: self-hosted
+    needs: [Sync_source, depends]
+    steps:
       - name: Build Gapps
         run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GAPPS=true && mka bacon | tee log.txt
         
+  Release:
+    runs-on: self-hosted
+    needs: Build_rom
+    steps:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
