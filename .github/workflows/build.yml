@@ -8,9 +8,9 @@ jobs:
     steps:
       - name: Setup git and install repo
         run: |
-          git config --global user.email "rabil@techie.com"
-          git config --global user.name "Mohammed Rabil"
-          git config --global pull.rebase true
+          git config --global user.email "rom-builder@rest.eu.org"
+          git config --global user.name "ROM BUILDER"
+          git config --global pull.rebase true  
           sudo apt-get update -y && sudo apt-get install repo -y
           
   depends:
@@ -82,11 +82,16 @@ jobs:
     runs-on: self-hosted
     needs: [Build_rom_vanilla, Build_rom_gapps]
     steps:
+        - name: Prepare tag
+          id: tag_code
+          run: echo "TAG=$(date +'v%d-%m-%Y-%H%M%S')" >> $GITHUB_OUTPUT
+          
         - name: Upload modules to release
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.RELEASE_TOKEN }}
-            file: out/target/product/vince/riceDroid*
             repo_name: rom-builder/Vince-RiceDroid
-            overwrite: false
+            tag: ${{ steps.tag_code.outputs.TAG }}
+            release_name: ${{ steps.tag_code.outputs.TAG }}
             file_glob: true
+            file: out/target/product/vince/riceDroid*
