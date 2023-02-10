@@ -15,19 +15,19 @@ jobs:
         run: sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip openssl libssl-dev fontconfig -y
         
       - name: Clone Device Tree
-        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince
+        run: git clone https://github.com/anandhan07/android_device_xiaomi_vince -b ricedroid-13.0 device/xiaomi/vince || echo "Already done"
         
       - name: Clone Vendor Tree
-        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince
+        run: git clone https://github.com/anandhan07/android_vendor_xiaomi_vince -b 13.0 vendor/xiaomi/vince || echo "Already done"
         
       - name: Clone Kernel Tree
-        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince
+        run: git clone https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince -b master kernel/xiaomi/vince || echo "Already done"
       
       - name: Fetch clang
-        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b
+        run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || echo "Already done"
         
       - name: Setup source
-        run: repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault
+        run: repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault || echo "Already done"
         
       - name: Sync source
         run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune --force-sync -j8
