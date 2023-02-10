@@ -61,20 +61,27 @@ jobs:
       - name: Sync source
         run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune -j8
         
-  Build_rom:
+  Build_rom_vanilla:
     runs-on: self-hosted
     needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree]
     steps:
-      - name: Build Gapps
+      - name: Build Vanilla
         run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
+        
+  Build_rom_gapps:
+    runs-on: self-hosted
+    needs: Build_rom_vanilla
+    steps:
+      - name: Build Gapps
+        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GAPPS=true && mka bacon | tee log.txt
         
   Release:
     runs-on: self-hosted
-    needs: Build_rom
+    needs: [Build_rom_vanilla, Build_rom_gapps]
     steps:
         - name: Upload modules to release
           uses: svenstaro/upload-release-action@v2
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
-            file: ./out/target/product/vince/*.zip
+            file: out/target/product/vince/*.zip
             overwrite: false
