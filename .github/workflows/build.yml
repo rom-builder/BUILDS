@@ -63,7 +63,7 @@ jobs:
         
   Build_rom:
     runs-on: self-hosted
-    needs: [Sync_source, depends]
+    needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree]
     steps:
       - name: Build Gapps
         run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
