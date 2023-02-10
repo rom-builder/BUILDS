@@ -58,26 +58,29 @@ jobs:
     runs-on: self-hosted
     needs: Setup_source
     steps:
+      - name: Delete existing builds folders
+        run: rm -rf out/target/product/vince || echo "Doesn't exist"
+        
       - name: Sync source
         run: repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune -j8
         
-#   Build_rom_vanilla:
-#     runs-on: self-hosted
-#     needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree]
-#     steps:
-#       - name: Build Vanilla
-#         run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
+  Build_rom_vanilla:
+    runs-on: self-hosted
+    needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree]
+    steps:
+      - name: Build Vanilla
+        run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
         
-#   Build_rom_gapps:
-#     runs-on: self-hosted
-#     needs: Build_rom_vanilla
-#     steps:
-#       - name: Build Gapps
-#         run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GMS=true && mka bacon | tee log.txt
+  Build_rom_gapps:
+    runs-on: self-hosted
+    needs: Build_rom_vanilla
+    steps:
+      - name: Build Gapps
+        run: . build/envsetup.sh && lunch lineage_vince-user && export WITH_GMS=true && mka bacon | tee log.txt
         
   Release:
     runs-on: self-hosted
-#     needs: [Build_rom_vanilla, Build_rom_gapps]
+    needs: [Build_rom_vanilla, Build_rom_gapps]
     steps:
         - name: Upload modules to release
           uses: svenstaro/upload-release-action@v2
