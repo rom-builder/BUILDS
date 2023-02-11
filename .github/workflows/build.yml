@@ -50,7 +50,15 @@ jobs:
     steps:
       - name: Fetch clang
         run: git clone --depth=1 https://gitlab.com/anandhan07/aosp-clang.git -b clang-15.0.3 prebuilts/clang/host/linux-x86/clang-r468909b || ( cd prebuilts/clang/host/linux-x86/clang-r468909b && git fetch && git pull )
-        
+  
+  Extras:
+    runs-on: self-hosted
+    needs: Repo_git
+    steps:
+      - name: Fetch Revamped FM Radio
+        run: git clone --depth=1 https://github.com/iusmac/RevampedFMRadio -b qcom packages/apps/RevampedFMRadio || (cd packages/apps/RevampedFMRadio && git pull)
+
+
   Setup_source:
     runs-on: self-hosted
     needs: [Repo_git]
@@ -70,7 +78,7 @@ jobs:
         
   Build_rom_vanilla:
     runs-on: self-hosted
-    needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree]
+    needs: [Sync_source, depends, Clang, Device_tree, Vendor_tree, Kernel_tree, Extras]
     steps:
       - name: Build Vanilla
         run: . build/envsetup.sh && lunch lineage_vince-user && mka bacon | tee log.txt
