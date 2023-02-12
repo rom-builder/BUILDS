@@ -56,8 +56,10 @@ jobs:
     needs: Repo_git
     steps:
       - name: Fetch Revamped FM Radio
-        run: git clone --depth=1 https://github.com/iusmac/RevampedFMRadio -b qcom packages/apps/RevampedFMRadio || (cd packages/apps/RevampedFMRadio && git pull)
+        run: git clone --depth=1 https://github.com/iusmac/RevampedFMRadio -b qcom packages/apps/RevampedFMRadio || (cd packages/apps/RevampedFMRadio && git fetch && git pull)
 
+      - name: Fetch ViperFX
+        run: git clone --depth=1 https://gitlab.com/anandhan07/packages_apps_ViPER4AndroidFX.git -b master packages/apps/ViPER4AndroidFX || (cd packages/apps/ViPER4AndroidFX && git fetch && git pull)
 
   Setup_source:
     runs-on: self-hosted
