@@ -32,13 +32,12 @@ git_clone() {
     echo "Already cloned $repo into $dir."
     echo "Pulling latest changes..."
     cd "$dir"
-    git checkout "$branch"
     git pull
     cd - > /dev/null
     return
   else # Clone the repo into the directory
-    # If branch is specified, clone with branch
-    if [ -n "$branch" ]; then
+    # If branch is not null
+    if [ "$branch" != "null" ]; then
       echo "Cloning $repo into $dir with branch $branch..."
       git clone -b "$branch" "$repo" "$dir"
     else
