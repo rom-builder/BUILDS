@@ -36,7 +36,7 @@ jobs:
               run: repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
 
             - name: Build ROM
-              run: . build/env* && lunch voltage_miatoll-userdebug && brunch miatoll
+              run: . build/env* && lunch voltage_miatoll-userdebug && brunch miatoll | tee log.txt
 
             - name: Prepare tag
               id: tag_code
