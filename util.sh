@@ -81,7 +81,6 @@ git_clone() {
 
   # Check if the directory exists
   if [ -d "$dir" ]; then
-    update_tg "Directory $dir already exists. Pulling latest changes..."
     echo "Already cloned $repo into $dir."
     echo "Pulling latest changes..."
     cd "$dir"
@@ -91,11 +90,9 @@ git_clone() {
   else # Clone the repo into the directory
     # If branch is not null
     if [ "$branch" != "null" ]; then
-      update_tg "Cloning $repo into $dir with branch $branch..."
       echo "Cloning $repo into $dir with branch $branch..."
       git clone "$repo" -b "$branch" "$dir"
     else
-      update_tg "Cloning $repo into $dir..."
       echo "Cloning $repo into $dir..."
       git clone "$repo" "$dir"
     fi
