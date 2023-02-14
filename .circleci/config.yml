@@ -1,0 +1,26 @@
+version: 2.1
+jobs:
+  build:
+    machine: true
+    resource_class: large
+    steps:
+      - checkout
+      - run:
+          name: "Remove git"
+          command: "rm -rf .git"
+
+      - run:
+          name: "Build ROM"
+          command: "bash build.sh"
+          environment:
+            RELEASE_GITHUB_TOKEN: $RELEASE_GITHUB_TOKEN
+
+# Invoke jobs via workflows
+# # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
+workflows:
+  my_job:
+    when:
+      condition:
+        equal: "push/*"
+    jobs:
+      - build
