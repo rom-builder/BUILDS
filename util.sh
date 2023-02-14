@@ -5,7 +5,7 @@ telegram_send_message() {
   local token=$TG_TOKEN
   local chat=$TG_CHAT
   local message=$1
-  local disable_web_page_preview=($2 || false)
+  local disable_web_page_preview=$2
 
   if [ -z "$token" ] || [ -z "$chat" ]; then
     return
