@@ -19,5 +19,8 @@ jobs:
 # # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
   my_job:
+    when:
+      condition:
+        equal: "push/*"
     jobs:
       - build
