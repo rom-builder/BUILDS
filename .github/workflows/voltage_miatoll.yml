@@ -12,7 +12,7 @@ jobs:
             
             - name: Load utils
               run: |
-                source ./utils.sh
+                source ./util.sh
 
             - name: Setup New Folder
               run: |
