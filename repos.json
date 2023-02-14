@@ -10,7 +10,7 @@
         },
         {
             "repo": "https://github.com/Ritvik-alt/vendor_xiaomi_sm6250-common",
-            "dir": "vendor/xiaomi/sm6250-common "
+            "dir": "vendor/xiaomi/sm6250-common"
         },
         {
             "repo": "https://github.com/Ritvik-alt/vendor_xiaomi_miatoll",
