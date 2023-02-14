@@ -77,25 +77,46 @@ clean_build() {
   fi
 }
 
-# release() {
-#   while [[ "$#" -gt 0 ]]; do
-#     case $1 in
-#       -p | --pattern) pattern="$2"; shift ;;
-#       -tk | --token) token="$2"; shift ;;
-#       -t | --tag) tag="$2"; shift ;;
-#       -d | --dir) dir="$2"; shift ;;
-#       -r | --repo) repo="$2"; shift ;;
-#       *) echo "Unknown parameter passed: $1"; exit 1 ;;
-#     esac
-#     shift
-#   done
+github_release() {
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+      -tk|--token) token="$2"; shift ;;
+      -r|--repo) repo="$2"; shift ;;
+      -tg|--tag) tag="$2"; shift ;;
+      -p|--pattern) pattern="$2"; shift ;;
+      *) echo "Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+  done
 
-#   # From github-release
-#   # 1. Create a new release with tag and name with the provided token
-#   # 2. Upload all files matching the pattern to the release 
-#   # 3. Publish the release
+  # Get the SHA of the latest commit in the repository
+  echo "Gethering latest commit SHA..."
+  latest_sha=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
 
-#   # Create a new release with github api
-#   echo "Creating a new release with tag: $tag"
+  # Create the new tag
+  echo "Creating tag $tag..."
+  tag_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_COMMITTER_NAME\",\"email\":\"$GIT_COMMITTER_EMAIL\"}}")
+  tag_sha=$(echo $tag_response | jq -r '.sha')
+
+  if [ "$tag_sha" = "null" ]; then
+    echo "Failed to create tag $tag in $repo. Aborting upload."
+    exit 1
+  fi
+
+  # Create the release
+  echo "Creating release $tag..."
+  release_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
+  release_id=$(echo $release_response | jq -r '.id')
+
+  # Upload each file that matches the pattern
+  for file in $pattern; do
+    echo "Uploading $file..."
+    filename=$(basename "$file")
+    curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" --data-binary @"$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename"
+  done
+
+  echo "Uploaded files to release $tag in $repo."
   
-# }
+}
+
+export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release
