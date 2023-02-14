@@ -58,10 +58,10 @@ git_clone_json() {
 
     # if branch is not specified
     if [ "$branch" == "null" ]; then
-      echo "Cloning $repo into $dir..."
+      echo "Repo: $repo Dir: $dir"
       git_clone -r "$repo" -d "$dir"
     else
-      echo "Cloning $repo into $dir with branch $branch..."
+      echo "Repo: $repo Dir: $dir Branch: $branch"
       git_clone -r "$repo" -d "$dir" -b "$branch"
     fi
   done
