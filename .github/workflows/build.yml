@@ -19,3 +19,12 @@ jobs:
         run: bash build.sh
         env:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: Logs
+          path: |
+            log.txt
+            *.log
