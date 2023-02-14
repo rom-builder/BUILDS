@@ -40,7 +40,7 @@ telegram_send_file() {
 
 update_tg() {
   local message="$1"
-  telegram_send_message "Build $ROM_NAME for $DEVICE %0A%0A *$message*" true
+  telegram_send_message "*$message*" true
 }
 
 logt() {
