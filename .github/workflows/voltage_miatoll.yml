@@ -10,26 +10,23 @@ jobs:
             - name: Checkout
               uses: actions/checkout@v2
 
-            - name: Setup New Folder
-              run: |
-                mkdir -p miatoll-voltage
-                cd miatoll-voltage
-                
+            - name: delete .git
+              run: rm -rf .git
 
             - name: Resolve resolve_dependencies
               run: |
-                source ../util.sh
+                source util.sh
                 resolve_dependencies
 
             - name: Setup git
               run: |
-                source ../util.sh
+                source util.sh
                 git_setup "ROMBUILDER" "rom-builder@rest.eu.org"
 
             
             - name: Clone Repos
               run: |
-                source ../util.sh
+                source util.sh
                 git_clone_json "volatge_miatoll_repos.json"
 
             - name: Setup Build Environment
