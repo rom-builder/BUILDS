@@ -54,4 +54,4 @@ jobs:
                 tag: ${{ steps.tag_code.outputs.TAG }}
                 release_name: ${{ steps.tag_code.outputs.TAG }}
                 file_glob: true
-                file: out/target/product/vince/voltage*
+                file: out/target/product/miatoll/voltage*
