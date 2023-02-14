@@ -5,6 +5,7 @@ telegram_send_message() {
   local token=$TG_TOKEN
   local chat=$TG_CHAT
   local message=$1 
+  local disable_web_page_preview=$2
 
   if [ -z "$token" ] || [ -z "$chat" ]; then
     return
@@ -15,7 +16,7 @@ telegram_send_message() {
     exit 1
   fi
 
-  curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN
+  curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview"
 }
 
 telegram_send_file() {
@@ -39,7 +40,7 @@ telegram_send_file() {
 
 update_tg() {
   local message="$1"
-  telegram_send_message "Build $ROM_NAME for $DEVICE\n\n *$message*"
+  telegram_send_message "Build $ROM_NAME for $DEVICE %0A%0A *$message*" true
 }
 
 logt() {
