@@ -143,5 +143,44 @@ github_release() {
   
 }
 
+telegram_send_message() {
+  # use environment variables
+  local token=$TG_TOKEN
+  local chat=$TG_CHAT
+  local message=$1 
+
+  if [ -z "$token" ] || [ -z "$chat" ]; then
+    return
+  fi
+
+  if [ -z "$message" ]; then
+    echo "No message passed. Aborting."
+    exit 1
+  fi
+
+  curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN
+}
+
+telegram_send_file() {
+  # use environment variables
+  local token=$TG_TOKEN
+  local chat=$TG_CHAT
+  local file=$1
+  local caption=$2
+
+  if [ -z "$token" ] || [ -z "$chat" ]; then
+    return
+  fi
+
+  if [ -z "$file" ]; then
+    echo "No file passed. Aborting."
+    exit 1
+  fi
+
+  curl -s -X POST "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption"
+}
+
+
+
 # Export functions
 export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release
