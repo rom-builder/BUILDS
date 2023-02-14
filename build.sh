@@ -34,7 +34,6 @@ $SYNC_SOURCE_COMMAND
 # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
 if [[ $BUILD_VANILLA_COMMAND == *"tee log.txt"* ]] || [ "$LOG_OUTPUT" == "false" ]; then
     $BUILD_VANILLA_COMMAND
-    fi
 else
     $BUILD_VANILLA_COMMAND | tee vanilla.log
 fi
