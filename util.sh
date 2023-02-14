@@ -1,9 +1,13 @@
 #!/bin/bash
 
-prefix="device"
 
 resolve_dependencies() {
-  sudo apt-get install git-core gnupg flex bison build-essential zip curl zlib1g-dev libc6-dev-i386 libncurses5 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z1-dev libgl1-mesa-dev libxml2-utils xsltproc unzip openssl libssl-dev fontconfig jq $@ -y
+  packages=("repo" "git-core" "gnupg" "flex" "bison" "build-essential" "zip" "curl" "zlib1g-dev" "libc6-dev-i386" "libncurses5" "lib32ncurses5-dev" "x11proto-core-dev" "libx11-dev" "lib32z1-dev" "libgl1-mesa-dev" "libxml2-utils" "xsltproc" "unzip" "openssl" "libssl-dev" "fontconfig" "jq")
+  echo "Updating package lists..."
+  sudo apt-get update -y 
+  echo "Installing dependencies..."
+  sudo apt-get install -y ${packages[@]}
+  echo "Dependencies check complete."
 }
 
 git_setup() {
@@ -89,6 +93,22 @@ github_release() {
     shift
   done
 
+  # Check if $OUT_DIR is set
+  if [ -z "$OUT_DIR" ]; then
+    echo "OUT_DIR is not set. Aborting upload."
+    exit 1
+  fi
+
+  # Check if files exist
+  echo "Checking if files exist..."
+  if [ -z "$(ls -A $OUT_DIR | grep -E "$pattern")" ]; then
+    echo $(ls -A $OUT_DIR | grep -E "$pattern")
+    echo "No files found matching pattern $pattern. Aborting upload."
+    exit 1
+  else
+    echo "Files found matching pattern $pattern."
+  fi
+
   # Get the SHA of the latest commit in the repository
   echo "Gethering latest commit SHA..."
   latest_sha=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
@@ -109,7 +129,7 @@ github_release() {
   release_id=$(echo $release_response | jq -r '.id')
 
   # Upload each file that matches the pattern
-  for file in $pattern; do
+  for file in $(ls -A $OUT_DIR | grep -E "$pattern"); do
     echo "Uploading $file..."
     filename=$(basename "$file")
     curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" --data-binary @"$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename"
@@ -119,4 +139,5 @@ github_release() {
   
 }
 
+# Export functions
 export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release
