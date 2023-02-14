@@ -53,6 +53,35 @@ git_clone() {
   unset repo dir branch
 }
 
+repo_exists() {
+  local repo="$1"
+  local token="$2"
+  local response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo")
+  if [[ $response == *"\"message\": \"Not Found\""* ]]; then
+    return 1 # repo does not exist
+  else
+    return 0 # repo exists
+  fi
+}
+
+create_repo() {
+  local repo="$1"
+  local token="$2"
+  #  split repo from owner/repo
+  local repo_name=$(echo "$repo" | cut -d'/' -f2)
+  local org=$(echo "$repo" | cut -d'/' -f1)
+  local response=$(curl -s -H "Authorization: Bearer $token" -d "{\"name\":\"$repo_name\",\"private\":false, \"description\": \"Builds for $repo_name\", \"auto_init\": true}" "https://api.github.com/orgs/$org/repos")
+  echo $response
+  if [[ $response == *"\"message\": \"Validation Failed\""* ]]; then
+    echo "Failed to create repository: $response"
+    return 1
+  else
+    echo "Repository created: $owner/$repo"
+    return 0
+  fi
+}
+
+
 git_clone_json() {
   local json_file="$1"
   # Check if the file exists
@@ -111,6 +140,15 @@ github_release() {
     exit 1
   else
     echo "Files found matching pattern $pattern."
+  fi
+
+  # Check if repo exists
+  echo "Checking if repo exists..."
+  if repo_exists "$repo" "$token"; then
+    echo "Repository already exists: $owner/$repo"
+  else
+    echo "Creating repository: $owner/$repo"
+    create_repo "$repo" "$token"
   fi
 
   # Get the SHA of the latest commit in the repository
