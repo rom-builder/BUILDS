@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 resolve_dependencies() {
   packages=("repo" "git-core" "gnupg" "flex" "bison" "build-essential" "zip" "curl" "zlib1g-dev" "libc6-dev-i386" "libncurses5" "lib32ncurses5-dev" "x11proto-core-dev" "libx11-dev" "lib32z1-dev" "libgl1-mesa-dev" "libxml2-utils" "xsltproc" "unzip" "openssl" "libssl-dev" "fontconfig" "jq")
   echo "Updating package lists..."
@@ -55,7 +54,12 @@ git_clone() {
 }
 
 git_clone_json() {
-   local json_file="$1"
+  local json_file="$1"
+  # Check if the file exists
+  if [ ! -f "$json_file" ]; then
+    echo "File $json_file does not exist. Aborting."
+    exit 1
+  fi
   for repo in $(jq -r '.repos[].repo' $json_file); do
     dir=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .dir' $json_file)
     branch=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .branch' $json_file)
