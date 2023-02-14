@@ -28,5 +28,4 @@ jobs:
         with:
           name: Logs
           path: |
-            log.txt
-            *.log
+            *.txt
