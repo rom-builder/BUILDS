@@ -12,7 +12,7 @@ for var in "${req_vars[@]}"; do
     fi
 done
 
-send_tg_message "Starting build..."
+update_tg "Starting build..."
 echo "Starting build..."
 start_time=$(date +%s)
 
