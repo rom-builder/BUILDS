@@ -25,23 +25,23 @@ git_clone_json $REPOS_JSON
 clean_build $OUT_DIR
 
 # Setup source
-$SETUP_SOURCE_COMMAND
+eval $SETUP_SOURCE_COMMAND
 
 # Sync source
-$SYNC_SOURCE_COMMAND
+eval $SYNC_SOURCE_COMMAND
 
 # Build Vanilla
 # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
 if [[ $BUILD_VANILLA_COMMAND == *"tee log.txt"* ]] || [ "$LOG_OUTPUT" == "false" ]; then
-    $BUILD_VANILLA_COMMAND
+    eval $BUILD_VANILLA_COMMAND
 else
-    $BUILD_VANILLA_COMMAND | tee vanilla.log
+    eval $BUILD_VANILLA_COMMAND | tee vanilla.log
 fi
 
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-    $BUILD_GAPPS_COMMAND | tee gapps.log
+    eval $BUILD_GAPPS_COMMAND | tee gapps.log
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
