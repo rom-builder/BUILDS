@@ -6,10 +6,10 @@ source .env # remove this line if you want to environment variables to be set in
 # Check if required variables are set
 req_vars=("GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "OUT_DIR" "RELEASE_FILES_PATTERN")
 for var in "${req_vars[@]}"; do
-  if [ -z "${!var}" ]; then
-    echo "Required variable $var is not set. Please set it in .env"
-    exit 1
-  fi
+    if [ -z "${!var}" ]; then
+        echo "Required variable $var is not set. Please set it in .env"
+        exit 1
+    fi
 done
 
 # Install dependencies
@@ -28,20 +28,20 @@ clean_build $OUT_DIR
 eval $SETUP_SOURCE_COMMAND
 
 # Sync source
-eval $SYNC_SOURCE_COMMAND
+eval  $SYNC_SOURCE_COMMAND
 
 # Build Vanilla
 # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
 if [[ $BUILD_VANILLA_COMMAND == *"tee log.txt"* ]] || [ "$LOG_OUTPUT" == "false" ]; then
     eval $BUILD_VANILLA_COMMAND
 else
-    eval $BUILD_VANILLA_COMMAND | tee vanilla.log
+    eval $BUILD_VANILLA_COMMAND | tee vanilla_build_log.txt
 fi
 
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-    eval $BUILD_GAPPS_COMMAND | tee gapps.log
+    $BUILD_GAPPS_COMMAND | tee gapps_build_log.txt
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
