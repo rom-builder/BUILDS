@@ -5,7 +5,7 @@
             "dir": "device/xiaomi/sm6250-common"
         },
         {
-            "repo": "https://github.com/Ritvik-alt/device_xiaomi_miatoll ",
+            "repo": "https://github.com/Ritvik-alt/device_xiaomi_miatoll",
             "dir": "device/xiaomi/miatoll"
         },
         {

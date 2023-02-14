@@ -39,7 +39,7 @@ git_clone() {
     # If branch is not null
     if [ "$branch" != "null" ]; then
       echo "Cloning $repo into $dir with branch $branch..."
-      git clone -b "$branch" "$repo" "$dir"
+      git clone "$repo" -b "$branch" "$dir"
     else
       echo "Cloning $repo into $dir..."
       git clone "$repo" "$dir"
