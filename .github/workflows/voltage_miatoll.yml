@@ -1,0 +1,57 @@
+name: Voltage miatoll build
+on:
+    workflow_dispatch:
+
+
+jobs:
+    build:
+        runs-on: self-hosted
+
+        - name: Checkout
+          uses: actions/checkout@v2
+          
+        - name: Load utils
+          run: |
+          source ./utils.sh
+
+        - name: Setup New Folder
+          run: |
+            mkdir -p miatoll-voltage
+            cd miatoll-voltage
+            
+
+        - name: Resolve resolve_dependencies
+          run: |
+            resolve_dependencies
+
+        - name: Setup git
+          run: |
+            git_setup "ROMBUILDER" "rom-builder@rest.eu.org"
+
+        
+        - name: Clone Repos
+          run: |
+            git_clone_json "volatge_miatoll_repos.json"
+
+        - name: Setup Build Environment
+          run: repo init -u https://github.com/VoltageOS/manifest.git -b 13 --depth=1
+
+        - name: Repo Sync
+          run: repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags
+
+        - name: Build ROM
+          run: . build/env* && lunch voltage_miatoll-userdebug && brunch miatoll
+
+        - name: Prepare tag
+          id: tag_code
+          run: echo "TAG=$(date +'v%d-%m-%Y-%H%M%S')" >> $GITHUB_OUTPUT
+          
+        - name: Upload modules to release
+          uses: svenstaro/upload-release-action@v2
+          with:
+            repo_token: ${{ secrets.RELEASE_TOKEN }}
+            repo_name: rom-builder/Miatoll-VoltageOS
+            tag: ${{ steps.tag_code.outputs.TAG }}
+            release_name: ${{ steps.tag_code.outputs.TAG }}
+            file_glob: true
+            file: out/target/product/vince/voltage*

@@ -1,0 +1,24 @@
+{
+    "repos": [
+        {
+            "repo": "Ritvik-alt/device_xiaomi_sm6250-common",
+            "dir": "device/xiaomi/sm6250-common"
+        },
+        {
+            "repo": "Ritvik-alt/device_xiaomi_miatoll ",
+            "dir": "device/xiaomi/miatoll"
+        },
+        {
+            "repo": "Ritvik-alt/vendor_xiaomi_sm6250-common",
+            "dir": "vendor/xiaomi/sm6250-common "
+        },
+        {
+            "repo": "Ritvik-alt/vendor_xiaomi_miatoll",
+            "dir": "vendor/xiaomi/miatoll"
+        },
+        {
+            "repo": "Ritvik-alt/kernel_xiaomi_sm6250",
+            "dir": "kernel/xiaomi/sm6250"
+        }
+    ]
+}
