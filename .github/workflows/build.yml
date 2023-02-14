@@ -2,9 +2,6 @@ name: Build ROM
 on:
   workflow_dispatch:
 
-env:
-  RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-
 jobs:
   build:
     runs-on: self-hosted
@@ -20,3 +17,5 @@ jobs:
 
       - name: Build
         run: bash build.sh
+        env:
+          RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
