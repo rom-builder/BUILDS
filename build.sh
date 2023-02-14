@@ -12,6 +12,8 @@ for var in "${req_vars[@]}"; do
     fi
 done
 
+telegram_send_message "-------------------------%0ABuild Initiated %0A $ROM_NAME for $DEVICE %0A-------------------------"
+
 update_tg "Starting build..."
 echo "Starting build..."
 start_time=$(date +%s)
@@ -72,5 +74,5 @@ github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(printf '%dh:%dm:%ds\n' $(($end_time-$start_time))%3600/60 $(($end_time-$start_time))%60)
-update_tg "[Build finished in $time_taken](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]"
+telegram_send_message "-------------------------%0A[Build finished in $time_taken](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]%0A-------------------------"
 echo "Build finished in $time_taken"
