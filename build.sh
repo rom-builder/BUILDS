@@ -4,7 +4,7 @@ source util.sh
 source .env # remove this line if you want to environment variables to be set in the shell or use a different method to set them
 
 # Check if required variables are set
-req_vars = ("GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "BUILD_DIR" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "OUT_DIR" "RELEASE_FILES_PATTERN")
+req_vars=("GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "BUILD_DIR" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "OUT_DIR" "RELEASE_FILES_PATTERN")
 for var in "${req_vars[@]}"; do
   if [ -z "${!var}" ]; then
     echo "Required variable $var is not set. Please set it in .env"
