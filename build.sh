@@ -36,17 +36,17 @@ if [[ $BUILD_VANILLA_COMMAND == *"tee log.txt"* ]] || [ "$LOG_OUTPUT" == "false"
     $BUILD_VANILLA_COMMAND
     fi
 else
-    $BUILD_VANILLA_COMMAND | tee log.txt
+    $BUILD_VANILLA_COMMAND | tee vanilla.log
 fi
 
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-    $BUILD_GAPPS_COMMAND
+    $BUILD_GAPPS_COMMAND | tee gapps.log
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
 
 # Release builds
-tag = $(date +'v%d-%m-%Y-%H%M%S')
+tag=$(date +'v%d-%m-%Y-%H%M%S')
 github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN
