@@ -180,7 +180,12 @@ telegram_send_file() {
   curl -s -X POST "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption"
 }
 
+update_tg() {
+  local message="$1"
+  telegram_send_message "Build $ROM_NAME for $DEVICE\n\n *$message*"
+}
+
 
 
 # Export functions
-export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release
+export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release telegram_send_message telegram_send_file update_tg
