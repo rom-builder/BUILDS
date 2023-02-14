@@ -16,7 +16,7 @@ telegram_send_message() {
     exit 1
   fi
 
-  curl -s -X POST "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview"
+  curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview"
 }
 
 telegram_send_file() {
@@ -35,7 +35,7 @@ telegram_send_file() {
     exit 1
   fi
 
-  curl -s -X POST "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption"
+  curl -s "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption"
 }
 
 update_tg() {
