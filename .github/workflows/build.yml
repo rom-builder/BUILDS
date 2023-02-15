@@ -25,7 +25,7 @@ jobs:
           TG_CHAT: ${{ secrets.TG_CHAT }}
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         if: always()
         with:
           name: Logs

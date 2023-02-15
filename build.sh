@@ -12,7 +12,8 @@ for var in "${req_vars[@]}"; do
     fi
 done
 
-telegram_send_message "-------------------------%0ABuild Initiated %0A $ROM_NAME for $DEVICE %0A-------------------------"
+telegram_send_message "-------------------------"
+telegram_send_message "Build Initiated: [*$ROM_NAME* for *$DEVICE*]($GITHUB_RUN_URL)"
 
 update_tg "Starting build..."
 echo "Starting build..."
@@ -57,8 +58,7 @@ fi
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     gapps_log_file="gapps_build_log.txt"
-    update_tg "Building GApps..."
-    echo "Building GApps..."
+    logt "Building GApps..."
     $BUILD_GAPPS_COMMAND | tee $gapps_log_file
     telegram_send_file $gapps_log_file "GApps build log"
 else
@@ -67,12 +67,11 @@ fi
 
 # Release builds
 tag=$(date +'v%d-%m-%Y-%H%M%S')
-update_tg "Releasing builds with tag $tag..."
-echo "Releasing builds with tag $tag..."
 github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN
 
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(printf '%dh:%dm:%ds\n' $(($end_time-$start_time))%3600/60 $(($end_time-$start_time))%60)
-telegram_send_message "-------------------------%0A[Build finished in $time_taken](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]%0A-------------------------"
+telegram_send_message "[Build finished in *$time_taken*](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]"
+telegram_send_message "-------------------------"
 echo "Build finished in $time_taken"
