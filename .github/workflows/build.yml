@@ -1,6 +1,11 @@
 name: Build ROM
 on:
   workflow_dispatch:
+    inputs:
+      clean_dir:
+        description: 'Specify directory to be cleaned before build. Output directory is cleaned by default.'
+        required: true
+        default: ''
 
 jobs:
   build:
@@ -8,16 +13,18 @@ jobs:
     environment: 
       name: Builder
     steps:
+      - name: Clean Directory
+        if: ${{ inputs.clean_dir != '' }}
+        run: rm -rf ${{ inputs.clean_dir }}
+
       - name: Checkout
-        uses: actions/checkout@v3
-        with:
-          clean: false
+        run: git clone ${{ github.event.inputs.repo }} --depth=1 --branch main rom-build_scripts || (cd rom-build_scripts && git pull)
 
       - name: Disable git
-        run: rm -rf .git
+        run: rm -rf rom-build_scripts/.git
 
       - name: Build
-        run: bash build.sh
+        run: bash rom-build_scripts/build.sh
         env:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
