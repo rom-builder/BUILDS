@@ -26,7 +26,7 @@ jobs:
           for i in $arr
           do
             git checkout $i
-            git merge main --no-edit --no-ff -m "Merge main into $i [skip ci]" || echo "Merge failed for $i"
+            git merge main --no-edit --no-ff || echo "Merge failed for $i"
           done
       - name: Push all changes
         run: git push origin --all
