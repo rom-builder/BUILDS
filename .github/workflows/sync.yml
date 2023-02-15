@@ -1,0 +1,43 @@
+# Whenever a push is made to the main branch, this workflow will merge the main branch into all other branches.
+# This is useful for keeping all branches up to date with the latest changes.
+
+name: Sync
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      
+      - name: Sync for all branches
+        run: |
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git config --global user.name "github-actions[bot]"
+          git fetch --all
+          git checkout main
+          git pull
+          for branch in $(git branch -r | grep -v HEAD | grep -v main); do
+            git checkout $branch
+            git merge main
+            git push
+          done
+          branches=$(git branch -r | grep -v HEAD | grep -v main)
+
+          if [ -z "$branches" ]; then
+            echo "No branches to sync"
+          else
+            for branch in $branches; do
+              git checkout $branch
+              git merge main --no-edit --no-ff -m "Merge main into $branch"
+              git push origin $branch
+              echo "Synced branch: $branch"
+            done
+            echo "Synced branches: $branches"
+          fi
+        
