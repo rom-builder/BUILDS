@@ -4,7 +4,7 @@ source util.sh
 source .env # remove this line if you want to environment variables to be set in the shell or use a different method to set them
 
 # Check if required variables are set
-req_vars=("DEVICE" "ROM_NAME" "GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "OUT_DIR" "RELEASE_FILES_PATTERN")
+req_vars=("DEVICE" "ROM_NAME" "GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "RELEASE_OUT_DIR" "RELEASE_FILES_PATTERN")
 for var in "${req_vars[@]}"; do
     if [ -z "${!var}" ]; then
         echo "Required variable $var is not set. Please set it in .env"
@@ -29,7 +29,7 @@ git_setup $GIT_NAME $GIT_EMAIL
 git_clone_json $REPOS_JSON
 
 # Cleanup old builds
-clean_build $OUT_DIR
+clean_build $RELEASE_OUT_DIR
 
 # if PRE_SETUP_SOURCE_COMMAND is set then run it
 if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
