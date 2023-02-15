@@ -20,8 +20,9 @@ jobs:
       - name: Checkout
         run: |
           rm -rf __rom-build_scripts__
-          echo "Branch: ${{ github.ref }}"
-          git clone ${{ github.server_url }}/${{ github.repository }} __rom-build_scripts__ -b ${{ github.ref }} --depth 1 --single-branch
+          # remove starting with refs/heads/ from /refs/heads/vince/lineage-18.1
+          git_branch=$(echo ${{ github.ref }} | sed 's/refs\/heads\///')
+          git clone ${{ github.server_url }}/${{ github.repository }} __rom-build_scripts__ -b $git_branch --depth 1 --single-branch
 
       - name: Build
         run: bash __rom-build_scripts__/build.sh
