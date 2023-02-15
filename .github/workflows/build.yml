@@ -4,7 +4,7 @@ on:
     inputs:
       clean_dir:
         description: 'Specify directory to be cleaned before build. Output directory is cleaned by default.'
-        required: true
+        required: false
         default: ''
 
 jobs:
