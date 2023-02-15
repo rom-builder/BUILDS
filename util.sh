@@ -16,7 +16,7 @@ telegram_send_message() {
     exit 1
   fi
 
-  send_message_response=$(curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview")
+  local send_message_response=$(curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview")
   if [ "$(echo "$send_message_response" | jq -r '.ok')" == "true" ]; then
     echo "Message sent to Telegram."
   else
@@ -40,7 +40,7 @@ telegram_send_file() {
     exit 1
   fi
 
-  send_file_response=$(curl -s "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption")
+  local send_file_response=$(curl -s "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption")
   if [ "$(echo "$send_file_response" | jq -r '.ok')" == "true" ]; then
     echo "File $file sent to Telegram."
   else
@@ -54,13 +54,13 @@ update_tg() {
 }
 
 logt() {
-  message="$1"
+  local message="$1"
   update_tg "$message"
   echo "$message"
 }
 
 resolve_dependencies() {
-  packages=('repo' 'git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq')
+  local packages=('repo' 'git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq')
   echo "Updating package lists..."
   sudo apt-get update -y 
   echo "Installing dependencies..."
@@ -69,8 +69,8 @@ resolve_dependencies() {
 }
 
 git_setup() {
-  declare -r name="$1"
-  declare -r email="$2"
+  local name="$1"
+  local email="$2"
   echo "Setting up git with email: $email and name: $name"
   git config --global user.email "$email"
   git config --global user.name "$name"
@@ -150,7 +150,7 @@ git_clone_json() {
 }
 
 clean_build() {
-  declare -r dir="$1"
+  local dir="$1"
   echo "Cleaning build directory: $dir"
   if [ -d "$dir" ]; then
     rm -rf "$dir"
@@ -199,12 +199,12 @@ github_release() {
 
   # Get the SHA of the latest commit in the repository
   echo "Gethering latest commit SHA..."
-  latest_sha=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
+  local latest_sha=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
 
   # Create the new tag
   echo "Creating tag $tag..."
-  tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
-  tag_sha=$(echo $tag_response | jq -r '.sha')
+  local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
+  local tag_sha=$(echo $tag_response | jq -r '.sha')
   echo "Tag created with SHA $tag_sha"
   if [ "$tag_sha" = "null" ]; then
     logt "Failed to create tag $tag in $repo. Aborting upload."
@@ -213,10 +213,9 @@ github_release() {
 
   # Create the release
   echo "Creating release $tag..."
-  release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
-  release_id=$(echo $release_response | jq -r '.id')
-  release_url=$(echo $release_response | jq -r '.html_url')
-  assets_url=$(echo $release_response | jq -r '.assets_url')
+  local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
+  local release_id=$(echo $release_response | jq -r '.id')
+  local release_url=$(echo $release_response | jq -r '.html_url')
   update_tg "[Release created]($release_url)"
   echo "Release created at $release_url"
 
