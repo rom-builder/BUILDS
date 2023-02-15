@@ -237,11 +237,11 @@ github_release() {
 
   # Get the SHA of the latest commit in the repository
   echo "Gethering latest commit SHA..."
-  latest_sha=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
+  latest_sha=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
 
   # Create the new tag
   echo "Creating tag $tag..."
-  tag_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
+  tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
   tag_sha=$(echo $tag_response | jq -r '.sha')
   echo "Tag created with SHA $tag_sha"
   if [ "$tag_sha" = "null" ]; then
@@ -251,7 +251,7 @@ github_release() {
 
   # Create the release
   echo "Creating release $tag..."
-  release_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
+  release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
   release_id=$(echo $release_response | jq -r '.id')
   release_url=$(echo $release_response | jq -r '.html_url')
   assets_url=$(echo $release_response | jq -r '.assets_url')
@@ -262,7 +262,7 @@ github_release() {
   for file in $(ls -A $OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
     filename=$(basename "$file")
-    file_release=$(curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" -T "$OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
+    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     telegram_send_message "[$file]($file_url)"
   done
