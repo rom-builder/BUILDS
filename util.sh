@@ -209,16 +209,16 @@ github_release() {
     fi
   done
 
-  # Check if $OUT_DIR is set
-  if [ -z "$OUT_DIR" ]; then
-    logt "OUT_DIR is not set. Aborting upload."
+  # Check if $RELEASE_OUT_DIR is set
+  if [ -z "$RELEASE_OUT_DIR" ]; then
+    logt "RELEASE_OUT_DIR is not set. Aborting upload."
     exit 1
   fi
 
   # Check if files exist
   echo "Checking if files exist..."
-  if [ -z "$(ls -A $OUT_DIR | grep -E "$pattern")" ]; then
-    echo $(ls -A $OUT_DIR | grep -E "$pattern")
+  if [ -z "$(ls -A $RELEASE_OUT_DIR | grep -E "$pattern")" ]; then
+    echo $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern")
     update_tg "Build had no files to upload."
     echo "No files found matching pattern $pattern. Aborting upload."
     return
@@ -258,10 +258,10 @@ github_release() {
   echo "Release created at $release_url"
 
   # Upload each file that matches the pattern
-  for file in $(ls -A $OUT_DIR | grep -E "$pattern"); do
+  for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
     filename=$(basename "$file")
-    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
+    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     telegram_send_message "[$file]($file_url)"
   done
