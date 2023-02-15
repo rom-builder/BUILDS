@@ -75,10 +75,8 @@ fi
 update_tg "Building vanilla..."
 echo "Building vanilla..."
 # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
-if [[ $BUILD_VANILLA_COMMAND == *"tee"* ]] || [ "$LOG_OUTPUT" == "false" ]; then
+if [ "$LOG_OUTPUT" == "false" ]; then
     eval $BUILD_VANILLA_COMMAND
-    log_file=$(echo $BUILD_GAPPS_COMMAND | grep -oP '(?<=tee ).*(?=.txt|.log)')
-    telegram_send_file $log_file "Vanilla build log"
 else
     vanilla_log_file="vanilla_build_log.txt"
     eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
@@ -90,10 +88,8 @@ fi
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     gapps_log_file="gapps_build_log.txt"
     logt "Building GApps..."
-    if [[ $BUILD_GAPPS_COMMAND == *"tee"* ]] || [ "$LOG_OUTPUT" == "false" ]; then
+    if [ "$LOG_OUTPUT" == "false" ]; then
         eval $BUILD_GAPPS_COMMAND
-        log_file=$(echo $BUILD_GAPPS_COMMAND | grep -oP '(?<=tee ).*(?=.txt|.log)')
-        telegram_send_file $log_file "GApps build log"
     else
         eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
         telegram_send_file $gapps_log_file "GApps build log"
