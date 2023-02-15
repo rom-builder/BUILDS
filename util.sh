@@ -16,7 +16,12 @@ telegram_send_message() {
     exit 1
   fi
 
-  curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview"
+  send_message_response=$(curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview")
+  if [ "$(echo "$send_message_response" | jq -r '.ok')" == "true" ]; then
+    echo "Message sent to Telegram."
+  else
+    echo "Error sending message to Telegram."
+  fi
 }
 
 telegram_send_file() {
@@ -35,7 +40,12 @@ telegram_send_file() {
     exit 1
   fi
 
-  curl -s "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption"
+  send_file_response=$(curl -s "https://api.telegram.org/bot$token/sendDocument" -F chat_id="$chat" -F document=@"$file" -F caption="$caption")
+  if [ "$(echo "$send_file_response" | jq -r '.ok')" == "true" ]; then
+    echo "File $file sent to Telegram."
+  else
+    echo "Error sending file $file to Telegram."
+  fi
 }
 
 update_tg() {
