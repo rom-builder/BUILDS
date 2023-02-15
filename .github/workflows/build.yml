@@ -26,11 +26,9 @@ jobs:
 
       - name: Build
         run: |
-          rm -rf util.sh 
+          rm -rf util.sh build.sh .env
           cp -r __rom-build_scripts__/util.sh .
-          rm -rf build.sh
           cp -r __rom-build_scripts__/build.sh .
-          rm -rf .env
           cp -r __rom-build_scripts__/.env .
           chmod +x build.sh
           ./build.sh
