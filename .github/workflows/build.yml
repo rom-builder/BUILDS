@@ -18,7 +18,7 @@ jobs:
         run: rm -rf ${{ inputs.clean_dir }}
 
       - name: Checkout
-        run: git clone ${{ github.event.inputs.repo }} --depth=1 --branch main rom-build_scripts || (cd rom-build_scripts && git pull)
+        run: git clone ${{ github.server_url }}/${{ github.repository }} rom-build_scripts -b main --depth 1 --single-branch || (cd rom-build_scripts && git pull)
 
       - name: Disable git
         run: rm -rf rom-build_scripts/.git
