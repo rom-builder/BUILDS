@@ -18,7 +18,10 @@ jobs:
         run: rm -rf ${{ inputs.clean_dir }}
 
       - name: Checkout
-        run: git clone ${{ github.server_url }}/${{ github.repository }} __rom-build_scripts__ -b main --depth 1 --single-branch || (cd __rom-build_scripts__ && git pull)
+        run: |
+          rm -rf __rom-build_scripts__
+          echo "Branch: ${{ github.ref }}"
+          git clone ${{ github.server_url }}/${{ github.repository }} __rom-build_scripts__ -b ${{ github.ref }} --depth 1 --single-branch
 
       - name: Build
         run: bash __rom-build_scripts__/build.sh
