@@ -15,22 +15,17 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: Sync for all branches
+      - name: List all branches
+        run: git branch -a
+        id: branches
+      - name: Merge changes from main
         run: |
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git config --global user.name "github-actions[bot]"
-          git fetch --all
-          branches=$(git branch -l | grep -v HEAD | grep -v main)
-          if [ -z "$branches" ]; then
-            echo "No branches to sync"
-          else
-            for branch in $branches; do
-              echo "Syncing branch: $branch"
-              git checkout $branch
-              git merge main --no-edit --no-ff -m "Merge main into $branch"
-              git push origin $branch
-              echo "Synced branch: $branch"
-            done
-            echo "Synced branches: $branches"
-          fi
+          arr=($(echo ${{ steps.branches.outputs.stdout }} | tr ' ' '\n'))
+          for i in "${arr[@]}"
+          do
+            git checkout $i
+            git merge main
+          done
+      - name: Push all changes
+        run: git push origin --all
         
