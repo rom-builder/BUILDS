@@ -50,7 +50,7 @@ logt() {
 }
 
 resolve_dependencies() {
-  packages=("repo" "git-core" "gnupg" "flex" "bison" "build-essential" "zip" "curl" "zlib1g-dev" "libc6-dev-i386" "libncurses5" "lib32ncurses5-dev" "x11proto-core-dev" "libx11-dev" "lib32z1-dev" "libgl1-mesa-dev" "libxml2-utils" "xsltproc" "unzip" "openssl" "libssl-dev" "fontconfig" "jq")
+  packages=('repo' 'git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq')
   echo "Updating package lists..."
   sudo apt-get update -y 
   echo "Installing dependencies..."
@@ -83,9 +83,10 @@ git_clone() {
   if [ -d "$dir" ]; then
     echo "Already cloned $repo into $dir."
     echo "Pulling latest changes..."
-    cd "$dir"
-    git pull
-    cd - > /dev/null
+    (
+      cd "$dir" || exit
+      git pull
+    )
     return
   else # Clone the repo into the directory
     # If branch is not null
