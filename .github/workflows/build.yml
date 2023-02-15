@@ -25,7 +25,15 @@ jobs:
           git clone ${{ github.server_url }}/${{ github.repository }} __rom-build_scripts__ -b $git_branch --depth 1 --single-branch
 
       - name: Build
-        run: (cd __rom-build_scripts__ && bash build.sh)
+        run: |
+          rm -rf uti.sh 
+          cp -r __rom-build_scripts__/util.sh .
+          rm -rf build.sh
+          cp -r __rom-build_scripts__/build.sh .
+          rm -rf .env
+          cp -r __rom-build_scripts__/.env .
+          chmod +x build.sh
+          ./build.sh
         env:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
