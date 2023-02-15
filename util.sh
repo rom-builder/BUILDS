@@ -204,6 +204,8 @@ github_release() {
   # Create the new tag
   echo "Creating tag $tag..."
   local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
+  # TODO: Remove below line after debugging
+  telegram_send_message "$tag_response"
   local tag_sha=$(echo $tag_response | jq -r '.sha')
   echo "Tag created with SHA $tag_sha"
   if [ "$tag_sha" = "null" ]; then
