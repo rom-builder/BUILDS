@@ -7,7 +7,6 @@ jobs:
     runs-on: self-hosted
     environment: 
       name: Builder
-      url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -23,6 +22,7 @@ jobs:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
+          GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
