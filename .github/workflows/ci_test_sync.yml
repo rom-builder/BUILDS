@@ -1,17 +1,34 @@
-# Whenever a push is made to the main branch, this workflow will merge the main branch into all other branches.
-# This is useful for keeping all branches up to date with the latest changes.
-
-name: Sync
+name: CI Tests and Sync
 on:
-  workflow_run:
-    workflows: ["Test"]
-    types:
-      - completed
+  push:
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - "docs/**"
+  pull_request:
     branches:
       - main
+    paths-ignore:
+      - "README.md"
+      - "LICENSE"
+      - "docs/**"
+
+permissions: {}
 
 jobs:
+  shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Run ShellCheck
+        uses: ludeeus/action-shellcheck@master
+        with:
+          severity: error
+
   sync:
+    needs: shellcheck
+    name: Sync
     runs-on: ubuntu-latest
     if: ${{ github.ref == 'refs/heads/main' }}
     steps:
@@ -38,4 +55,3 @@ jobs:
           done
       - name: Push all changes
         run: git push origin --all
-        
