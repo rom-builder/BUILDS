@@ -26,7 +26,7 @@ jobs:
 
       - name: Build
         run: |
-          rm -rf uti.sh 
+          rm -rf util.sh 
           cp -r __rom-build_scripts__/util.sh .
           rm -rf build.sh
           cp -r __rom-build_scripts__/build.sh .
