@@ -21,11 +21,11 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git fetch --all
           branches=$(git branch -l | grep -v HEAD | grep -v main)
-
           if [ -z "$branches" ]; then
             echo "No branches to sync"
           else
             for branch in $branches; do
+              echo "Syncing branch: $branch"
               git checkout $branch
               git merge main --no-edit --no-ff -m "Merge main into $branch"
               git push origin $branch
