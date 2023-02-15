@@ -11,8 +11,8 @@
             "branch":"13.0"
         },
         {
-            "repo":"https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince"
-            "dir":"kernel/xiaomi/vince"
+            "repo":"https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince",
+            "dir":"kernel/xiaomi/vince",
             "branch":"master"
         },
         {
