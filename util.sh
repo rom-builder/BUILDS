@@ -152,13 +152,13 @@ git_clone_json() {
   for repo in $(jq -r '.repos[].repo' $json_file); do
     dir=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .dir' $json_file)
     branch=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .branch' $json_file)
-    pre_commands=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .pre_commands' $json_file)
-    post_commands=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .post_commands' $json_file)
+    pre_command=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .pre_command' $json_file)
+    post_command=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .post_command' $json_file)
 
-    # If pre_commands is not null
-    if [ "$pre_commands" != "null" ]; then
+    # If pre_command is not null
+    if [ "$pre_command" != "null" ]; then
       echo "Running pre_commands for $repo..."
-      eval "$pre_commands"
+      eval "$pre_command"
     fi
     
     # if branch is not specified
@@ -171,9 +171,9 @@ git_clone_json() {
     fi
 
     # If post_commands is not null
-    if [ "$post_commands" != "null" ]; then
+    if [ "$post_command" != "null" ]; then
       echo "Running post_commands for $repo..."
-      eval "$post_commands"
+      eval "$post_command"
     fi
   done
 }
