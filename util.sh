@@ -208,9 +208,9 @@ github_release() {
 
   # Create the new tag
   echo "Creating tag $tag..."
-  tag_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_COMMITTER_NAME\",\"email\":\"$GIT_COMMITTER_EMAIL\"}}")
+  tag_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
   tag_sha=$(echo $tag_response | jq -r '.sha')
-
+  echo "Tag created with SHA $tag_sha"
   if [ "$tag_sha" = "null" ]; then
     logt "Failed to create tag $tag in $repo. Aborting upload."
     exit 1
@@ -229,7 +229,9 @@ github_release() {
   for file in $(ls -A $OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
     filename=$(basename "$file")
-    curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" --data-binary @"$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename"
+    file_release=$(curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" -T "$OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
+    file_url=$(echo $file_release | jq -r '.browser_download_url')
+    update_tg "[$file]($file_url)"
   done
 
   logt "Uploaded files to release $tag in $repo."
