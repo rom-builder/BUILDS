@@ -142,7 +142,15 @@ git_clone_json() {
   for repo in $(jq -r '.repos[].repo' $json_file); do
     dir=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .dir' $json_file)
     branch=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .branch' $json_file)
+    pre_commands=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .pre_commands' $json_file)
+    post_commands=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .post_commands' $json_file)
 
+    # If pre_commands is not null
+    if [ "$pre_commands" != "null" ]; then
+      echo "Running pre_commands for $repo..."
+      eval "$pre_commands"
+    fi
+    
     # if branch is not specified
     if [ "$branch" == "null" ]; then
       echo "Repo: $repo Dir: $dir"
@@ -150,6 +158,12 @@ git_clone_json() {
     else
       echo "Repo: $repo Dir: $dir Branch: $branch"
       git_clone -r "$repo" -d "$dir" -b "$branch"
+    fi
+
+    # If post_commands is not null
+    if [ "$post_commands" != "null" ]; then
+      echo "Running post_commands for $repo..."
+      eval "$post_commands"
     fi
   done
 }
