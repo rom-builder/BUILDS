@@ -25,6 +25,10 @@ jobs:
           arr=$(git branch -r | grep -v HEAD | grep -v main | sed 's/origin\///g')
           for i in $arr
           do
+            i=$(echo $i | xargs)
+            if [[ $i == feature/* ]] || [[ $i == bugfix/* ]]; then
+              continue
+            fi
             git checkout $i
             git merge main --no-edit --no-ff || echo "Merge failed for $i"
           done
