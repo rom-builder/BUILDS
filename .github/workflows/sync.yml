@@ -16,7 +16,7 @@ jobs:
           fetch-depth: 0
       
       - name: List all branches
-        run: echo "BRANCHES=$(git branch -r | grep -v HEAD | grep -v main | sed 's/origin\///g')" >> $GITHUB_ENV
+        run: echo "BRANCHES=$(git branch -r | grep -v HEAD | grep -v main | sed 's/origin\///g' | tr ' ' '\n' | tr '\n' ' ')" >> $GITHUB_ENV
         id: branches
       - name: Merge changes from main
         run: |
