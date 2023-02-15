@@ -190,6 +190,15 @@ github_release() {
     shift
   done
 
+  # check if all variables are set
+  required_vars=(token repo tag pattern)
+  for var in "${required_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+      echo "Variable $var is not set. Aborting."
+      return
+    fi
+  done
+
   # Check if $OUT_DIR is set
   if [ -z "$OUT_DIR" ]; then
     logt "OUT_DIR is not set. Aborting upload."
@@ -202,7 +211,7 @@ github_release() {
     echo $(ls -A $OUT_DIR | grep -E "$pattern")
     update_tg "Build had no files to upload."
     echo "No files found matching pattern $pattern. Aborting upload."
-    exit 1
+    return
   else
     echo "Files found matching pattern $pattern."
   fi
@@ -227,7 +236,7 @@ github_release() {
   echo "Tag created with SHA $tag_sha"
   if [ "$tag_sha" = "null" ]; then
     logt "Failed to create tag $tag in $repo. Aborting upload."
-    exit 1
+    return
   fi
 
   # Create the release
@@ -245,7 +254,7 @@ github_release() {
     filename=$(basename "$file")
     file_release=$(curl -s -H "Authorization: token $token" -H "Content-Type: application/octet-stream" -T "$OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
-    update_tg "[$file]($file_url)"
+    telegram_send_message "[$file]($file_url)"
   done
 
   logt "Uploaded files to release $tag in $repo."
