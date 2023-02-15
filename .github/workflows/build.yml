@@ -14,7 +14,7 @@ jobs:
       name: Builder
     steps:
       - name: Clean Directory
-        if: ${{ inputs.clean_dir != '' }}
+        if: ${{ inputs.clean_dir }}
         run: rm -rf ${{ inputs.clean_dir }}
 
       - name: Checkout
