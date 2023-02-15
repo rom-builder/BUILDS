@@ -156,7 +156,8 @@ github_release() {
   echo "Checking if files exist..."
   if [ -z "$(ls -A $OUT_DIR | grep -E "$pattern")" ]; then
     echo $(ls -A $OUT_DIR | grep -E "$pattern")
-    logt "No files found matching pattern $pattern. Aborting upload."
+    update_tg "Build had no files to upload."
+    echo "No files found matching pattern $pattern. Aborting upload."
     exit 1
   else
     echo "Files found matching pattern $pattern."
@@ -180,6 +181,10 @@ github_release() {
   echo "Creating release $tag..."
   release_response=$(curl -s -H "Authorization: token $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
   release_id=$(echo $release_response | jq -r '.id')
+  release_url=$(echo $release_response | jq -r '.html_url')
+  assets_url=$(echo $release_response | jq -r '.assets_url')
+  update_tg "[Release created]($release_url)"
+  echo "Release created at $release_url"
 
   # Upload each file that matches the pattern
   for file in $(ls -A $OUT_DIR | grep -E "$pattern"); do
