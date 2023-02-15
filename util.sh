@@ -54,7 +54,7 @@ resolve_dependencies() {
   echo "Updating package lists..."
   sudo apt-get update -y 
   echo "Installing dependencies..."
-  sudo apt-get install -y ${packages[@]}
+  sudo apt-get install -y "${packages[@]}"
   echo "Dependencies check complete."
 }
 
