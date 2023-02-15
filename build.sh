@@ -31,15 +31,45 @@ git_clone_json $REPOS_JSON
 # Cleanup old builds
 clean_build $OUT_DIR
 
+# if PRE_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running pre-setup source command..."
+    eval $PRE_SETUP_SOURCE_COMMAND
+fi
+
 # Setup source
 update_tg "Setting up source..."
 echo "Setting up source..."
 eval $SETUP_SOURCE_COMMAND
 
+# if POST_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running post-setup source command..."
+    eval $POST_SETUP_SOURCE_COMMAND
+fi
+
+# if PRE_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running pre-sync source command..."
+    eval $PRE_SYNC_SOURCE_COMMAND
+fi
+
 # Sync source
 update_tg "Syncing source..."
 echo "Syncing source..."
 eval  $SYNC_SOURCE_COMMAND
+
+# if POST_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running post-sync source command..."
+    eval $POST_SYNC_SOURCE_COMMAND
+fi
+
+# if PRE_BUILD_COMMAND is set then run it
+if [ -n "$PRE_BUILD_COMMAND" ]; then
+    echo "Running pre-build command..."
+    eval $PRE_BUILD_COMMAND
+fi
 
 # Build Vanilla
 update_tg "Building vanilla..."
@@ -75,3 +105,9 @@ time_taken=$(printf '%dh:%dm:%ds\n' $(($end_time-$start_time))%3600/60 $(($end_t
 telegram_send_message "[Build finished in *$time_taken*](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]"
 telegram_send_message "---------------------------------"
 echo "Build finished in $time_taken"
+
+# if POST_BUILD_COMMAND is set then run it
+if [ -n "$POST_BUILD_COMMAND" ]; then
+    echo "Running post-build command..."
+    eval $POST_BUILD_COMMAND
+fi
