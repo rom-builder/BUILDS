@@ -13,7 +13,7 @@ for var in "${req_vars[@]}"; do
 done
 
 telegram_send_message "---------------------------------"
-telegram_send_message "Build Initiated: [$ROM_NAME for $DEVICE]($GITHUB_RUN_URL)"
+update_tg "Build Initiated: [$ROM_NAME for $DEVICE]($GITHUB_RUN_URL)"
 
 update_tg "Starting build..."
 echo "Starting build..."
