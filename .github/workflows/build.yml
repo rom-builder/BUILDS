@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       clean_dir:
-        description: 'Specify directories to be removed with spaces. Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.
+        description: 'Specify directories to be removed with spaces. Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
         required: false
         default: ''
 
