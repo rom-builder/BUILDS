@@ -15,13 +15,10 @@ jobs:
         with:
           fetch-depth: 0
       
-      - name: List all branches
-        run: echo "BRANCHES=$(git branch -r | grep -v HEAD | grep -v main | sed 's/origin\///g' | tr ' ' '\n' | tr '\n' ' ')" >> $GITHUB_ENV
-        id: branches
       - name: Merge changes from main
         run: |
-          arr=($(echo ${{ steps.branches.outputs.BRANCHES }} | tr ' ' '\n'))
-          for i in "${arr[@]}"
+          arr=$(git branch -r | grep -v HEAD | grep -v main | sed 's/origin\///g')
+          for i in $arr
           do
             git checkout $i
             git merge main --no-edit --no-ff || echo "Merge failed for $i"
