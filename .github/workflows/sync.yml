@@ -20,14 +20,7 @@ jobs:
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git config --global user.name "github-actions[bot]"
           git fetch --all
-          git checkout main
-          git pull
-          for branch in $(git branch -r | grep -v HEAD | grep -v main); do
-            git checkout $branch
-            git merge main
-            git push
-          done
-          branches=$(git branch -r | grep -v HEAD | grep -v main)
+          branches=$(git branch -l | grep -v HEAD | grep -v main)
 
           if [ -z "$branches" ]; then
             echo "No branches to sync"
