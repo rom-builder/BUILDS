@@ -1,4 +1,4 @@
-name: CI Tests and Sync
+name: CI Test and Sync
 on:
   push:
     paths-ignore:
