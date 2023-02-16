@@ -277,7 +277,7 @@ github_release() {
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
     filename=$(basename "$file")
-    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
+    file_release=$(curl -X POST -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename" --compressed --output -)
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     # if file_url is null or empty
     if [ -z "$file_url" ]; then
