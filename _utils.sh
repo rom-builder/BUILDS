@@ -244,7 +244,7 @@ github_release() {
     # if file_url is null or empty
     if [ -z "$file_url" ]; then
       logt "File URL is null. Some error occured when uploading the file. Aborting upload."
-      echo "File release: $file_release"
+      echo "File release response: $file_release"
       return
     else
       echo "File URL: $file_url"
