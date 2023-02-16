@@ -278,14 +278,15 @@ github_release() {
     logt "Uploading $file..."
     filename=$(basename "$file")
     file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
-    if [ "$(echo $file_release | jq -r '.message')" != "null" ]; then
-      logt "Failed to upload $file to release $tag in $repo. Aborting upload."
-      logt "Response: $file_release"
+    file_url=$(echo $file_release | jq -r '.browser_download_url')
+    if [ "$file_url" = "null" ]; then
+      logt "File URL is null. Some error occured when uploading the file. Aborting upload."
+      echo "File release: $file_release"
       return
     else
-      file_url=$(echo $file_release | jq -r '.browser_download_url')
-      telegram_send_message "[$file]($file_url)"
+      echo "File URL: $file_url"
     fi
+    telegram_send_message "[$file]($file_url)"
   done
 
   logt "Uploaded files to release $tag in $repo."
