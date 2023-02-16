@@ -12,7 +12,7 @@ GIT_EMAIL="rom-builder@rest.eu.org"
 # RELEASE_GITHUB_TOKEN="" 
 
 # Required: Repository owner/repo to upload and release build files
-GITHUB_RELEASE_REPO=""
+GITHUB_RELEASE_REPO="rom-builder/Vince-RiceDroid"
 
 # Required: To upload the build, set this
 RELEASE_FILES_PATTERN="*.zip|*.md5sum|*.sha256sum"
@@ -41,7 +41,7 @@ RELEASE_OUT_DIR="out/target/product/$DEVICE"
 # PRE_SETUP_SOURCE_COMMAND=""
 
 # Required:
-SETUP_SOURCE_COMMAND=""
+SETUP_SOURCE_COMMAND="repo init --depth=1 --no-repo-verify -u https://github.com/ricedroidOSS/android -b thirteen -g default,-mips,-darwin,-notdefault"
 
 # Optional: If you have any post command to run after setting up source
 # POST_SETUP_SOURCE_COMMAND=""
@@ -50,7 +50,7 @@ SETUP_SOURCE_COMMAND=""
 # PRE_SYNC_SOURCE_COMMAND=""
 
 # Required:
-SYNC_SOURCE_COMMAND=""
+SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --force-remove-dirty --optimized-fetch --prune --force-sync -j8"
 
 # Optional: If you have any post command to run after syncing source
 # POST_SYNC_SOURCE_COMMAND=""
@@ -59,10 +59,10 @@ SYNC_SOURCE_COMMAND=""
 # PRE_BUILD_COMMAND=""
 
 # Vanilla build command 
-BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE | tee log.txt"
+BUILD_VANILLA_COMMAND=". build/envsetup.sh && lunch lineage_vince-user && mka bacon"
 
 # Optional: If you want to build GAPPS, set this 
-BUILD_GAPPS_COMMAND=""
+BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch lineage_vince-user && export WITH_GMS=true && mka bacon"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
