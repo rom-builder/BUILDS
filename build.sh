@@ -104,7 +104,7 @@ github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $
 
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
-time_taken=$(printf '%dh:%dm:%ds\n' $(($end_time-$start_time))%3600/60 $(($end_time-$start_time))%60)
+time_taken=$(compute_build_time $start_time $end_time)
 telegram_send_message "[Build finished in *$time_taken*](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]"
 telegram_send_message "---------------------------------"
 echo "Build finished in $time_taken"
