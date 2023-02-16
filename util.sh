@@ -200,34 +200,59 @@ github_release() {
   # Get the SHA of the latest commit in the repository
   echo "Gethering latest commit SHA..."
   local latest_sha=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits" | jq -r '.[0].sha')
+  if  [ "$latest_sha" = "null" ]; then
+    logt "Failed to get latest commit SHA for $repo. Aborting upload."
+    logt "Response: $latest_sha"
+    return
+  fi
 
   # Create the new tag
   echo "Creating tag $tag..."
   local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
-  # TODO: Remove below line after debugging
-  telegram_send_message "$tag_response"
-  local tag_sha=$(echo $tag_response | jq -r '.sha')
-  echo "Tag created with SHA $tag_sha"
-  if [ "$tag_sha" = "null" ]; then
+  # If error
+  if [ "$(echo $tag_response | jq -r '.message')" != "null" ]; then
     logt "Failed to create tag $tag in $repo. Aborting upload."
+    logt "Response: $tag_response"
     return
+  else
+    echo "Tag created successfully."
+  fi
+
+  local tag_sha=$(echo $tag_response | jq -r '.sha')
+  if [ "$tag_sha" = "null" ]; then
+    logt "Tag SHA is null. Aborting upload."
+    return
+  else
+    echo "Tag SHA $tag_sha"
   fi
 
   # Create the release
   echo "Creating release $tag..."
   local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
-  local release_id=$(echo $release_response | jq -r '.id')
-  local release_url=$(echo $release_response | jq -r '.html_url')
-  update_tg "[Release created]($release_url)"
-  echo "Release created at $release_url"
+  if [ "$(echo $release_response | jq -r '.message')" != "null" ]; then
+    logt "Failed to create release $tag in $repo. Aborting upload."
+    logt "Response: $release_response"
+    return
+  else
+    local release_id=$(echo $release_response | jq -r '.id')
+    local release_url=$(echo $release_response | jq -r '.html_url')
+    telegram_send_message "Created [Release]($release_url)" true
+    echo "Release created at $release_url"
+  fi
 
   # Upload each file that matches the pattern
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
     filename=$(basename "$file")
     file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
-    file_url=$(echo $file_release | jq -r '.browser_download_url')
-    telegram_send_message "[$file]($file_url)"
+    if [ "$(echo $file_release | jq -r '.message')" != "null" ]; then
+      logt "Failed to upload $file to release $tag in $repo. Aborting upload."
+      logt "Response: $file_release"
+      return
+    else
+      file_url=$(echo $file_release | jq -r '.browser_download_url')
+      telegram_send_message "[$file]($file_url)"
+    fi
   done
 
   logt "Uploaded files to release $tag in $repo."
