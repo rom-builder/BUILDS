@@ -212,7 +212,7 @@ github_release() {
   echo "Creating tag $tag..."
   local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
   # Check for error if latest_sha is null
-  if [ "$(echo $tag_response | jq -r 'sha')" = "null" ]; then
+  if [ "$(echo $tag_response | jq -r '.sha')" = "null" ]; then
     logt "Failed to create tag $tag in $repo. Aborting upload."
     logt "Response: $tag_response"
     return
