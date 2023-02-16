@@ -202,7 +202,7 @@ github_release() {
   local fetch_latest_sha_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits")
   local latest_sha=$(echo $fetch_latest_sha_response | jq -r '.[0].sha')
   # if latest_sha is null
-  if [ "$latest_sha" = "null" ]; then
+  if [ -z "$latest_sha" ]; then
     echo "Fetch latest SHA response: $fetch_latest_sha_response"
     echo "Latest SHA: $latest_sha"
     logt "Failed to get latest commit SHA for $repo. Aborting upload."
@@ -213,7 +213,7 @@ github_release() {
   echo "Creating tag $tag..."
   local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
   local tag_sha=$(echo $tag_response | jq -r '.sha')
-  if [ "$tag_sha" = "null" ]; then
+  if [ -z "$tag_sha" ]; then
     logt "Tag SHA is null. Aborting upload."
     echo "Tag response: $tag_response"
     return
@@ -225,7 +225,7 @@ github_release() {
   echo "Creating release $tag..."
   local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
   local release_url=$(echo $release_response | jq -r '.html_url')
-  if [ "$release_url" = "null" ]; then
+  if [ -z "$release_url" ]; then
     logt "Release URL is null. Some error occured when creating the release. Aborting upload."
     echo "Release response: $release_response"
     return
