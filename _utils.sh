@@ -261,16 +261,16 @@ github_release() {
   # Create the release
   echo "Creating release $tag..."
   local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
-  if [ "$(echo $release_response | jq -r '.message')" != "null" ]; then
-    logt "Failed to create release $tag in $repo. Aborting upload."
-    logt "Response: $release_response"
+  local release_url=$(echo $release_response | jq -r '.html_url')
+  if [ "$release_url" = "null" ]; then
+    logt "Release URL is null. Some error occured when creating the release. Aborting upload."
+    echo "Release response: $release_response"
     return
   else
-    local release_id=$(echo $release_response | jq -r '.id')
-    local release_url=$(echo $release_response | jq -r '.html_url')
-    telegram_send_message "Created [Release]($release_url)" true
-    echo "Release created at $release_url"
+    echo "Release URL: $release_url"
   fi
+  telegram_send_message "Created [Release]($release_url)" true
+  echo "Release created at $release_url"
 
   # Upload each file that matches the pattern
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
