@@ -302,5 +302,15 @@ github_release() {
   
 }
 
+compute_build_time() {
+  local start_time="$1"
+  local end_time="$2"
+  local build_time=$((end_time - start_time))
+  local hours=$((build_time / 3600))
+  local minutes=$((build_time % 3600 / 60))
+  local seconds=$((build_time % 60))
+  printf "%02d:%02d:%02d" $hours $minutes $seconds
+}
+
 # Export functions
 export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release telegram_send_message telegram_send_file update_tg logt
