@@ -271,7 +271,13 @@ compute_build_time() {
   local hours=$((build_time / 3600))
   local minutes=$((build_time % 3600 / 60))
   local seconds=$((build_time % 60))
-  printf "%02d:%02d:%02d" $hours $minutes $seconds
+  if [ "$hours" -gt 0 ]; then
+    echo "$hours h $minutes m $seconds s"
+  elif [ "$minutes" -gt 0 ]; then
+    echo "$minutes m $seconds s"
+  else
+    echo "$seconds s"
+  fi
 }
 
 # Export functions
