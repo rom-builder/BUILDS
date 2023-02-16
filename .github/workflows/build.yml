@@ -2,8 +2,12 @@ name: Build ROM
 on:
   workflow_dispatch:
     inputs:
+      fresh_install:
+        description: 'Do you want to clean everything and start fresh?'
+        required: false
+        default: false
       clean_dir:
-        description: 'Specify directories to be removed with spaces. Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
+        description: 'Ignore this if you have set above fresh install. Specify directories to be removed with spaces. Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
         required: false
         default: ''
 
@@ -13,6 +17,10 @@ jobs:
     environment: 
       name: Builder
     steps:
+      - name: Clean Everything and Start Fresh
+        if: ${{ inputs.fresh_install }}
+        run: rm -rf *
+
       - name: Clean Directory
         if: ${{ inputs.clean_dir }}
         run: rm -rf ${{ inputs.clean_dir }}
