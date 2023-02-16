@@ -4,11 +4,13 @@ on:
     inputs:
       fresh_install:
         description: 'Do you want to clean everything and start fresh?'
+        type: boolean
         required: false
         default: false
       clean_dir:
         description: 'Ignore this if you have set above fresh install. Specify directories to be removed with spaces. Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
         required: false
+        type: string
         default: ''
 
 jobs:
