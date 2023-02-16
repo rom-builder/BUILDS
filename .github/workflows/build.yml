@@ -41,7 +41,7 @@ jobs:
           cp -r __rom-build_scripts__/_build.sh .
           cp -r __rom-build_scripts__/._env .
           chmod +x _build.sh
-          ./build.sh
+          ./_build.sh
         env:
           RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
