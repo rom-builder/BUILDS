@@ -105,8 +105,7 @@ github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(compute_build_time $start_time $end_time)
-telegram_send_message "[Build finished in *$time_taken*](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]"
-telegram_send_message "---------------------------------"
+telegram_send_message "Build finished in *$time_taken* [Release](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]" true
 echo "Build finished in $time_taken"
 
 # if POST_BUILD_COMMAND is set then run it
