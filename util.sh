@@ -200,13 +200,10 @@ github_release() {
   # Get the SHA of the latest commit in the repository
   echo "Gethering latest commit SHA..."
   local fetch_latest_sha_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits")
-  if [ "$(echo $fetch_latest_sha_response | jq -r '.message')" != "null" ]; then
-    logt "Failed to get latest commit SHA for $repo. Aborting upload."
-    logt "Response: $fetch_latest_sha_response"
-    return
-  fi
   local latest_sha=$(echo $fetch_latest_sha_response | jq -r '.[0].sha')
   if [ "$latest_sha" == "null" ]; then
+    echo "Fetch latest SHA response: $fetch_latest_sha_response"
+    echo "Latest SHA: $latest_sha"
     logt "Failed to get latest commit SHA for $repo. Aborting upload."
     return
   fi
@@ -271,7 +268,13 @@ compute_build_time() {
   local hours=$((build_time / 3600))
   local minutes=$((build_time % 3600 / 60))
   local seconds=$((build_time % 60))
-  printf "%02d:%02d:%02d" $hours $minutes $seconds
+  if [ "$hours" -gt 0 ]; then
+    echo "$hours h $minutes m $seconds s"
+  elif [ "$minutes" -gt 0 ]; then
+    echo "$minutes m $seconds s"
+  else
+    echo "$seconds s"
+  fi
 }
 
 # Export functions
