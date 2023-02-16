@@ -201,7 +201,8 @@ github_release() {
   echo "Gethering latest commit SHA..."
   local fetch_latest_sha_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits")
   local latest_sha=$(echo $fetch_latest_sha_response | jq -r '.[0].sha')
-  if [ "$latest_sha" == "null" ]; then
+  # if latest_sha is null
+  if [ "$latest_sha" = "null" ]; then
     echo "Fetch latest SHA response: $fetch_latest_sha_response"
     echo "Latest SHA: $latest_sha"
     logt "Failed to get latest commit SHA for $repo. Aborting upload."
