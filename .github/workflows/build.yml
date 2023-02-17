@@ -36,10 +36,14 @@ jobs:
 
       - name: Build
         run: |
-          rm -rf _utils.sh _build.sh ._env_config
-          cp -r __rom-build_scripts__/_utils.sh .
-          cp -r __rom-build_scripts__/_build.sh .
-          cp -r __rom-build_scripts__/._env .
+          rm -rf _utils.sh _build.sh ._env repos.json
+          required_files=( _utils.sh _build.sh ._env repos.json )
+          for file in "${required_files[@]}"; do
+            if [ ! -f __rom-build_scripts__/$file ]; then
+              echo "File $file not found!"
+              exit 1
+            fi
+          done
           chmod +x _build.sh
           ./_build.sh
         env:
