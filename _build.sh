@@ -53,7 +53,7 @@ if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Sync source
-echo "Syncing source..."
+logt "Syncing source..."
 eval  $SYNC_SOURCE_COMMAND
 
 # if POST_SYNC_SOURCE_COMMAND is set then run it
