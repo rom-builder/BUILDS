@@ -43,6 +43,7 @@ jobs:
               echo "File $file not found!"
               exit 1
             fi
+            cp -r __rom-build_scripts__/$file .
           done
           chmod +x _build.sh
           ./_build.sh
