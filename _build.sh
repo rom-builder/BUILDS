@@ -12,10 +12,9 @@ for var in "${req_vars[@]}"; do
     fi
 done
 
-telegram_send_message "---------------------------------"
+telegram_send_message "⏳"
 telegram_send_message "*Build Initiated*: [$ROM_NAME for $DEVICE]($GITHUB_RUN_URL)" true
 
-update_tg "Starting build..."
 echo "Starting build..."
 start_time=$(date +%s)
 
@@ -38,7 +37,6 @@ if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
 fi
 
 # Setup source
-update_tg "Setting up source..."
 echo "Setting up source..."
 eval $SETUP_SOURCE_COMMAND
 
@@ -55,7 +53,6 @@ if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Sync source
-update_tg "Syncing source..."
 echo "Syncing source..."
 eval  $SYNC_SOURCE_COMMAND
 
@@ -72,8 +69,7 @@ if [ -n "$PRE_BUILD_COMMAND" ]; then
 fi
 
 # Build Vanilla
-update_tg "Building vanilla..."
-echo "Building vanilla..."
+logt "Building vanilla..."
 # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
 if [ "$LOG_OUTPUT" == "false" ]; then
     eval $BUILD_VANILLA_COMMAND
@@ -105,7 +101,7 @@ github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(compute_build_time $start_time $end_time)
-telegram_send_message "Build finished in *$time_taken* [Release](https://github.com/$GITHUB_RELEASE_REPO/releases/tag/$tag)]" true
+telegram_send_message "Build finished in *$time_taken*" true
 echo "Build finished in $time_taken"
 
 # if POST_BUILD_COMMAND is set then run it
