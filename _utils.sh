@@ -13,7 +13,7 @@ telegram_send_message() {
 
   if [ -z "$message" ]; then
     echo "No message passed. Aborting."
-    exit 1
+    return
   fi
 
   local send_message_response=$(curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview")
@@ -238,7 +238,7 @@ github_release() {
 
   # Upload each file that matches the pattern
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
-    logt "Uploading $file..."
+    echo "Uploading $file..."
     file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$file")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     # if file_url is null or empty
@@ -252,7 +252,8 @@ github_release() {
     telegram_send_message "[$file]($file_url)" true
   done
 
-  logt "Uploaded files to release $tag in $repo."
+  telegram_send_message "Uploaded files to [release $tag in $repo]($release_url)" true
+  echo "Uploaded files to release $tag in $repo"
   
 }
 
