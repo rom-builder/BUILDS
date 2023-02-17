@@ -36,8 +36,8 @@ jobs:
 
       - name: Build
         run: |
-          rm -rf _utils.sh _build.sh ._env repos.json
           required_files=( _utils.sh _build.sh ._env repos.json )
+          rm -rf "${required_files[@]}"
           for file in "${required_files[@]}"; do
             if [ ! -f __rom-build_scripts__/$file ]; then
               echo "File $file not found!"
