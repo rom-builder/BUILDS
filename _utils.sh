@@ -230,6 +230,7 @@ github_release() {
     echo "Release response: $release_response"
     return
   else
+    local release_id=$(echo $release_response | jq -r '.id')
     echo "Release URL: $release_url"
   fi
   telegram_send_message "Created [Release]($release_url)" true
@@ -238,7 +239,7 @@ github_release() {
   # Upload each file that matches the pattern
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
     logt "Uploading $file..."
-    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -H "Expect:" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$filename")
+    file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$file")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     # if file_url is null or empty
     if [ -z "$file_url" ]; then
@@ -248,7 +249,7 @@ github_release() {
     else
       echo "File URL: $file_url"
     fi
-    telegram_send_message "[$file]($file_url)"
+    telegram_send_message "[$file]($file_url)" true
   done
 
   logt "Uploaded files to release $tag in $repo."
