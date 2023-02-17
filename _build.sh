@@ -70,7 +70,7 @@ fi
 
 # Build Vanilla
 logt "Building vanilla..."
-# if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
+# if LOG_OUTPUT is set to false then don't log output
 if [ "$LOG_OUTPUT" == "false" ]; then
     eval $BUILD_VANILLA_COMMAND
 else
@@ -84,6 +84,7 @@ fi
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     gapps_log_file="gapps_build_log.txt"
     logt "Building GApps..."
+    # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
         eval $BUILD_GAPPS_COMMAND
     else
