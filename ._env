@@ -3,7 +3,7 @@ DEVICE="vince"
 ROM_NAME="SparkOS"
 
 # Required: git username
-GIT_NAME="ROM BUILDER"
+GIT_NAME="ROMBUILDER"
 # Required: git email
 GIT_EMAIL="rom-builder@rest.eu.org"
 
