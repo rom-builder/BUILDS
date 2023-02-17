@@ -13,7 +13,7 @@ telegram_send_message() {
 
   if [ -z "$message" ]; then
     echo "No message passed. Aborting."
-    exit 1
+    return
   fi
 
   local send_message_response=$(curl -s "https://api.telegram.org/bot$token/sendMessage" -d chat_id="$chat" -d text="$message" -d parse_mode=MARKDOWN -d disable_web_page_preview="$disable_web_page_preview")
