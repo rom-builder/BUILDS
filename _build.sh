@@ -28,75 +28,75 @@ git_setup $GIT_NAME $GIT_EMAIL
 # Clone repos
 git_clone_json $REPOS_JSON
 
-# # Cleanup old builds
-# clean_build $RELEASE_OUT_DIR
+# Cleanup old builds
+clean_build $RELEASE_OUT_DIR
 
-# # if PRE_SETUP_SOURCE_COMMAND is set then run it
-# if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
-#     echo "Running pre-setup source command..."
-#     eval $PRE_SETUP_SOURCE_COMMAND
-# fi
+# if PRE_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running pre-setup source command..."
+    eval $PRE_SETUP_SOURCE_COMMAND
+fi
 
-# # Setup source
-# update_tg "Setting up source..."
-# echo "Setting up source..."
-# eval $SETUP_SOURCE_COMMAND
+# Setup source
+update_tg "Setting up source..."
+echo "Setting up source..."
+eval $SETUP_SOURCE_COMMAND
 
-# # if POST_SETUP_SOURCE_COMMAND is set then run it
-# if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
-#     echo "Running post-setup source command..."
-#     eval $POST_SETUP_SOURCE_COMMAND
-# fi
+# if POST_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running post-setup source command..."
+    eval $POST_SETUP_SOURCE_COMMAND
+fi
 
-# # if PRE_SYNC_SOURCE_COMMAND is set then run it
-# if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
-#     echo "Running pre-sync source command..."
-#     eval $PRE_SYNC_SOURCE_COMMAND
-# fi
+# if PRE_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running pre-sync source command..."
+    eval $PRE_SYNC_SOURCE_COMMAND
+fi
 
-# # Sync source
-# update_tg "Syncing source..."
-# echo "Syncing source..."
-# eval  $SYNC_SOURCE_COMMAND
+# Sync source
+update_tg "Syncing source..."
+echo "Syncing source..."
+eval  $SYNC_SOURCE_COMMAND
 
-# # if POST_SYNC_SOURCE_COMMAND is set then run it
-# if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
-#     echo "Running post-sync source command..."
-#     eval $POST_SYNC_SOURCE_COMMAND
-# fi
+# if POST_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running post-sync source command..."
+    eval $POST_SYNC_SOURCE_COMMAND
+fi
 
-# # if PRE_BUILD_COMMAND is set then run it
-# if [ -n "$PRE_BUILD_COMMAND" ]; then
-#     echo "Running pre-build command..."
-#     eval $PRE_BUILD_COMMAND
-# fi
+# if PRE_BUILD_COMMAND is set then run it
+if [ -n "$PRE_BUILD_COMMAND" ]; then
+    echo "Running pre-build command..."
+    eval $PRE_BUILD_COMMAND
+fi
 
-# # Build Vanilla
-# update_tg "Building vanilla..."
-# echo "Building vanilla..."
-# # if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
-# if [ "$LOG_OUTPUT" == "false" ]; then
-#     eval $BUILD_VANILLA_COMMAND
-# else
-#     vanilla_log_file="vanilla_build_log.txt"
-#     eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
-#     telegram_send_file $vanilla_log_file "Vanilla build log"
-# fi
+# Build Vanilla
+update_tg "Building vanilla..."
+echo "Building vanilla..."
+# if tee log.txt command is found in BUILD_VANILLA_COMMAND then don't add extra tee command or LOG_OUTPUT is set to false
+if [ "$LOG_OUTPUT" == "false" ]; then
+    eval $BUILD_VANILLA_COMMAND
+else
+    vanilla_log_file="vanilla_build_log.txt"
+    eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
+    telegram_send_file $vanilla_log_file "Vanilla build log"
+fi
 
-# # Build GApps
-# # if BUILDS_GAPPS_SCRIPT is set else skip
-# if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-#     gapps_log_file="gapps_build_log.txt"
-#     logt "Building GApps..."
-#     if [ "$LOG_OUTPUT" == "false" ]; then
-#         eval $BUILD_GAPPS_COMMAND
-#     else
-#         eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
-#         telegram_send_file $gapps_log_file "GApps build log"
-#     fi
-# else
-#     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
-# fi
+# Build GApps
+# if BUILDS_GAPPS_SCRIPT is set else skip
+if [ -n "$BUILD_GAPPS_COMMAND" ]; then
+    gapps_log_file="gapps_build_log.txt"
+    logt "Building GApps..."
+    if [ "$LOG_OUTPUT" == "false" ]; then
+        eval $BUILD_GAPPS_COMMAND
+    else
+        eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
+        telegram_send_file $gapps_log_file "GApps build log"
+    fi
+else
+    echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
+fi
 
 # Release builds
 tag=$(date +'v%d-%m-%Y-%H%M%S')
