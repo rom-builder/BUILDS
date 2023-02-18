@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
     inputs:
       fresh_install:
-        description: 'Do you want to clean everything and start fresh? Warning! This runs (rm -rf *) command. All git repos are updated automatically. Do not check this if a build has failed because of some error. This will reduce build time significantly.'
+        description: 'Do you want to clean everything and start fresh?. All git repos are updated automatically. Do not check this if a build has failed because of some error, just re run workflow without checking this. This will reduce build time significantly.'
         type: boolean
         required: false
         default: false
@@ -22,7 +22,7 @@ jobs:
     steps:
       - name: Clean Everything and Start Fresh
         if: ${{ inputs.fresh_install }}
-        run: rm -rf *
+        run: find . -mindepth 1 -delete
 
       - name: Clean Directory
         if: ${{ inputs.clean_dir }}
