@@ -17,8 +17,8 @@
     },
     {
       "repo": "https://gitlab.com/anandhan07/aosp-clang.git",
-      "branch": "clang-15.0.3",
-      "dir": "prebuilts/clang/host/linux-x86/clang-r468909b"
+      "branch": "clang-16.0.2",
+      "dir": "prebuilts/clang/host/linux-x86/clang-r475365b"
     },
     {
       "repo": "https://github.com/iusmac/RevampedFMRadio",
