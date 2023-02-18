@@ -60,6 +60,7 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Clone repos
+logt "Cloning repos from $REPOS_JSON..."
 git_clone_json $REPOS_JSON
 
 # if PRE_BUILD_COMMAND is set then run it
