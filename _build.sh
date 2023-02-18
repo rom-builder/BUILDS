@@ -19,7 +19,7 @@ echo "Starting build..."
 start_time=$(date +%s)
 
 # Install dependencies
-resolve_dependencies
+resolve_dependencies | tee resolve_dependencies_log.txt
 
 # Setup git
 git_setup $GIT_NAME $GIT_EMAIL
@@ -51,7 +51,13 @@ fi
 
 # Sync source
 logt "Syncing source..."
-eval  $SYNC_SOURCE_COMMAND
+eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt
+if [ $? -ne 0 ]; then
+    echo "Sync failed. Aborting."
+    telegram_send_message "Sync failed. Aborting."
+    telegram_send_file sync_source_log.txt "Sync  source log"
+    exit 1
+fi
 
 # if POST_SYNC_SOURCE_COMMAND is set then run it
 if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
@@ -61,7 +67,13 @@ fi
 
 # Clone repos
 logt "Cloning repos from $REPOS_JSON..."
-git_clone_json $REPOS_JSON
+git_clone_json $REPOS_JSON | tee clone_repos_log.txt
+if [ $? -ne 0 ]; then
+    echo "Cloning repos failed. Aborting."
+    telegram_send_message "Cloning repos failed. Aborting."
+    telegram_send_file clone_repos_log.txt "Clone repos log"
+    exit 1
+fi
 
 # if PRE_BUILD_COMMAND is set then run it
 if [ -n "$PRE_BUILD_COMMAND" ]; then
@@ -79,6 +91,10 @@ else
     eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
     telegram_send_file $vanilla_log_file "Vanilla build log"
 fi
+if [ $? -ne 0 ]; then
+    logt "Vanilla build failed. Aborting."
+    exit 1
+fi
 
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
@@ -92,6 +108,10 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
         eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
         telegram_send_file $gapps_log_file "GApps build log"
     fi
+    if [ $? -ne 0 ]; then
+        logt "GApps build failed. Aborting."
+        return
+    fi
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
@@ -104,6 +124,7 @@ end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(compute_build_time $start_time $end_time)
 telegram_send_message "Build finished in *$time_taken*" true
+
 echo "Build finished in $time_taken"
 
 # if POST_BUILD_COMMAND is set then run it
