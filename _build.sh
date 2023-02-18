@@ -88,14 +88,12 @@ if [ "$LOG_OUTPUT" == "false" ]; then
     eval $BUILD_VANILLA_COMMAND
     if [ $? -ne 0 ]; then
         logt "Vanilla build failed. Aborting."
-        return
     fi
 else
     vanilla_log_file="vanilla_build_log.txt"
     eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
     if [ $? -ne 0 ]; then
         logt "Vanilla build failed. Aborting."
-        return
     fi
     telegram_send_file $vanilla_log_file "Vanilla build log"
 fi
@@ -110,13 +108,11 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
         eval $BUILD_GAPPS_COMMAND
         if [ $? -ne 0 ]; then
             logt "GApps build failed. Aborting."
-            return
         fi
     else
         eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
         if [ $? -ne 0 ]; then
             logt "GApps build failed. Aborting."
-            return
         fi
         telegram_send_file $gapps_log_file "GApps build log"
     fi
