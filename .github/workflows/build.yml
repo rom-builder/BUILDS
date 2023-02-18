@@ -37,7 +37,7 @@ jobs:
 
       - name: Build
         run: |
-          source __rom-build_scripts__/_env
+          source __rom-build_scripts__/._env
           required_files=( _utils.sh _build.sh ._env $REPOS_JSON )
           rm -rf "${required_files[@]}"
           for file in "${required_files[@]}"; do
