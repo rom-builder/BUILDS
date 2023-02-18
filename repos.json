@@ -29,6 +29,12 @@
       "repo": "https://gitlab.com/anandhan07/packages_apps_ViPER4AndroidFX.git",
       "dir": "packages/apps/ViPER4AndroidFX",
       "branch": "master"
+    },
+    {
+      "pre_command": "rm -rf device/qcom/sepolicy-legacy-um",
+      "repo": "https://github.com/anandhan07/android_device_qcom_sepolicy-legacy-um",
+      "dir": "device/qcom/sepolicy-legacy-um",
+      "branch": "spark-13.0"
     }
   ]
 }
