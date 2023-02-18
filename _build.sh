@@ -24,9 +24,6 @@ resolve_dependencies
 # Setup git
 git_setup $GIT_NAME $GIT_EMAIL
 
-# Clone repos
-git_clone_json $REPOS_JSON
-
 # Cleanup old builds
 clean_build $RELEASE_OUT_DIR
 
@@ -61,6 +58,9 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
     echo "Running post-sync source command..."
     eval $POST_SYNC_SOURCE_COMMAND
 fi
+
+# Clone repos
+git_clone_json $REPOS_JSON
 
 # if PRE_BUILD_COMMAND is set then run it
 if [ -n "$PRE_BUILD_COMMAND" ]; then
