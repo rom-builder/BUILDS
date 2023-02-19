@@ -16,11 +16,11 @@ on:
     inputs:
       fresh_install:
         type: boolean
-        required: true
+        required: false
       clean_dir:
-        required: true
+        required: false
         type: string
-        
+
     secrets:
       RELEASE_GITHUB_TOKEN:
         description: 'GitHub Token for Releases'
