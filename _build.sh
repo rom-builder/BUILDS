@@ -105,6 +105,9 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
         fi
         telegram_send_file $vanilla_log_file "Vanilla build log"
     fi
+    # Rename *.zip to *-vanilla.zip if exists in RELEASE_OUT_DIR
+    # This is to fix temp error, gapps build replacing vanilla file
+    (cd $RELEASE_OUT_DIR && mv *.zip *-vanilla.zip || echo "No vanilla build found")
 else
     echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
 fi
