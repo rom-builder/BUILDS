@@ -43,7 +43,7 @@ jobs:
           
       - name: Start VM instance
         run: |
-          gcloud compute instances ${{ env.PERFORM_ACTION }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
+          gcloud compute instances ${{ inputs.action }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
 
       - name: Run command on VM
         if: ${{ inputs.action == 'start' || inputs.action == 'restart' }}
