@@ -5,8 +5,8 @@ on:
       action:
         description: 'Action to perform'
         required: true
-        type: choices
-        choices: ['start', 'stop', 'restart']
+        type: choice
+        options: ['start', 'stop', 'restart']
         default: 'stop'
   workflow_call:
     secrets:
