@@ -24,6 +24,11 @@ on:
         description: 'Telegram Chat ID'
         required: true
 
+# queue up builds to prevent failures on progress of other builds
+concurrency:
+  group: building_rom
+  cancel-in-progress: false
+
 jobs:
   build:
     timeout-minutes: 2400
