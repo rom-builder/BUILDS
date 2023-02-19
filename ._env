@@ -47,7 +47,7 @@ SETUP_SOURCE_COMMAND="repo init --depth=1 --no-repo-verify -u https://github.com
 # POST_SETUP_SOURCE_COMMAND=""
 
 # Optional: If you have any pre command to run before syncing source
-PRE_SYNC_SOURCE_COMMAND="git_clone -r 'https://github.com/anandhan07/local_manifest.git' -b 'pixelexperience-13.0' -d '.repo/local_manifests'"
+# PRE_SYNC_SOURCE_COMMAND=""
 
 # Required:
 SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8"
