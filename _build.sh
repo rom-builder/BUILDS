@@ -49,6 +49,15 @@ if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
     eval $POST_SETUP_SOURCE_COMMAND
 fi
 
+# Call git_clone_json for repos with before_sync true
+git_clone_before_sync_log_file="clone_repos_before_sync_log.txt"
+git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file
+if [ $? -ne 0 ]; then
+    logt "Cloning repos for before_sync failed. Aborting."
+    telegram_send_file $git_clone_before_sync_log_file "Cloning repos log"
+    exit 1
+fi
+
 # if PRE_SYNC_SOURCE_COMMAND is set then run it
 if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
     echo "Running pre-sync source command..."
@@ -72,11 +81,9 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Clone repos
-logt "Cloning repos from $REPOS_JSON..."
 git_clone_json $REPOS_JSON | tee clone_repos_log.txt
 if [ $? -ne 0 ]; then
-    echo "Cloning repos failed. Aborting."
-    telegram_send_message "Cloning repos failed. Aborting."
+    logt "Cloning repos failed. Aborting."
     telegram_send_file clone_repos_log.txt "Clone repos log"
     exit 1
 fi
