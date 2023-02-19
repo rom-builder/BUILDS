@@ -33,7 +33,7 @@ jobs:
 
       - name: Run command on VM
         run: |
-            gcloud compute ssh ${{ secrets.VM_USERNAME }}@${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "cd ~/actions-runner && ls -alh && nohup ./run.sh >> runner.log &"
+            gcloud compute ssh ${{ secrets.VM_USERNAME }}@${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "cd ~/actions-runner && ./run.sh >> runner.log &"
 
   build:
     # Workflow file call
