@@ -15,10 +15,10 @@ on:
   workflow_call:
     inputs:
       fresh_install:
+        required: true
         type: boolean
-        required: false
       clean_dir:
-        required: false
+        required: true
         type: string
 
     secrets:
