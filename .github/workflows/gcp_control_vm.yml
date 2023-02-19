@@ -8,7 +8,12 @@ on:
         type: choice
         options: ['start', 'stop', 'restart']
         default: 'stop'
+
   workflow_call:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
     secrets:
       GCP_CREDENTIALS:
         description: 'GCP Credentials'
@@ -27,11 +32,6 @@ jobs:
   control-vm:
     runs-on: ubuntu-latest
     steps:
-      - name: Set PERFORM_ACTION
-        if: ${{ !env.PERFORM_ACTION }}
-        run: |
-          echo "PERFORM_ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV
-
       - name: "Authenticate"
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
@@ -46,6 +46,6 @@ jobs:
           gcloud compute instances ${{ env.PERFORM_ACTION }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
 
       - name: Run command on VM
-        if: ${{ env.PERFORM_ACTION == 'start' || env.PERFORM_ACTION == 'restart' }}
+        if: ${{ inputs.action == 'start' || inputs.action == 'restart' }}
         run: |
             gcloud compute ssh ${{ secrets.VM_USERNAME }}@${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "((cd ~/actions-runner && ./run.sh >> runner.log &) > /dev/null 2>&1 &) && exit"
