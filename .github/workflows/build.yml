@@ -24,6 +24,9 @@ on:
         description: 'Telegram Chat ID'
         required: true
 
+# queue up builds to prevent failures on progress of other builds
+concurrency: building_vm
+
 jobs:
   build:
     timeout-minutes: 2400
