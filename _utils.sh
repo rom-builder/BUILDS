@@ -212,6 +212,37 @@ clean_build() {
   fi
 }
 
+# Create a function to check if github repo exists or not
+check_github_repo() {
+  local repo=$1
+  local token=$2
+  local response=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: Bearer $token" https://api.github.com/repos/$repo)
+  if [[ $response -eq 200 ]]; then
+    return 0  # true
+  else
+    return 1  # false
+  fi
+}
+
+# Create a function to create a github repo
+create_github_repo() {
+  local repo_name=$1
+  local token=$2
+  local repo=$(echo $repo_name | cut -d'/' -f2)
+  local org=$(echo $repo_name | cut -d'/' -f1)
+  local data="{\"name\":\"$repo\",\"auto_init\":true,\"private\":false, \"has_issues\": false, \"has_projects\": false, \"has_wiki\": false, \"description\": \"Automated build releases for $DEVICE-$ROM_NAME\"}"
+  # Spit owner and repo from owner/repo
+  local response=$(curl -s -H "Authorization: Bearer $token" -d "$data" https://api.github.com/orgs/$org/repos)
+  local status=$(echo $response | jq -r '.message')
+  if [[ "$status" == "null" ]]; then
+    echo "Repository $repo_name created successfully."
+    return 0  # true
+  else
+    echo "Error creating repository: $status"
+    return 1  # false
+  fi
+}
+
 github_release() {
   while [[ "$#" -gt 0 ]]; do
     case $1 in
@@ -250,42 +281,20 @@ github_release() {
     echo "Files found matching pattern $pattern."
   fi
 
-  # Check if repo exists
-  echo "Checking if repo exists..."
-  if repo_exists "$repo" "$token"; then
-    echo "Repository already exists: $owner/$repo"
-  else
-    echo "Creating repository: $owner/$repo"
-    create_repo "$repo" "$token"
-  fi
-
-  # Get the SHA of the latest commit in the repository
-  echo "Gethering latest commit SHA..."
-  local fetch_latest_sha_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/commits")
-  local latest_sha=$(echo $fetch_latest_sha_response | jq -r '.[0].sha')
-  # if latest_sha is null
-  if [ -z "$latest_sha" ]; then
-    echo "Fetch latest SHA response: $fetch_latest_sha_response"
-    echo "Latest SHA: $latest_sha"
-    logt "Failed to get latest commit SHA for $repo. Aborting upload."
-    return
-  fi
-
-  # Create the new tag
-  echo "Creating tag $tag..."
-  local tag_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/git/tags" -d "{\"tag\":\"$tag\",\"message\":\"Release $tag\",\"object\":\"$latest_sha\",\"type\":\"commit\",\"tagger\":{\"name\":\"$GIT_NAME\",\"email\":\"$GIT_EMAIL\"}}")
-  local tag_sha=$(echo $tag_response | jq -r '.sha')
-  if [ -z "$tag_sha" ]; then
-    logt "Tag SHA is null. Aborting upload."
-    echo "Tag response: $tag_response"
-    return
-  else
-    echo "Tag SHA $tag_sha"
+  # Check if github repo exists
+  if ! check_github_repo "$repo" "$token"; then
+    echo "Github repo $repo does not exist. Creating..."
+    if create_github_repo "$repo" "$token"; then
+      echo "Github: $repo created successfully."
+    else
+      logt "Failed to create github repo $repo. Aborting upload."
+      return
+    fi
   fi
 
   # Create the release
   echo "Creating release $tag..."
-  local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$tag\"}")
+  local release_response=$(curl -s -H "Authorization: Bearer $token" "https://api.github.com/repos/$repo/releases" -d "{\"tag_name\":\"$tag\",\"name\":\"$ROM_NAME $tag\",\"body\":\"Release version **$tag**\n\nDevice: $DEVICE\nROM: $ROM_NAME\n\n***Happy flashing!***\",\"generate_release_notes\":false}")
   local release_url=$(echo $release_response | jq -r '.html_url')
   if [ -z "$release_url" ]; then
     logt "Release URL is null. Some error occured when creating the release. Aborting upload."
