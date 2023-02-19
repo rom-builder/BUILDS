@@ -41,7 +41,7 @@ jobs:
       - name: 'Set up Cloud SDK'
         uses: 'google-github-actions/setup-gcloud@v1'
           
-      - name: Start VM instance
+      - name: Perform action on VM
         run: |
           gcloud compute instances ${{ inputs.action }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
 
