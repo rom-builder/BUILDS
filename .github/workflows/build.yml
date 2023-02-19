@@ -13,6 +13,14 @@ on:
         type: string
         default: ''
   workflow_call:
+    inputs:
+      fresh_install:
+        type: boolean
+        required: true
+      clean_dir:
+        required: true
+        type: string
+        
     secrets:
       RELEASE_GITHUB_TOKEN:
         description: 'GitHub Token for Releases'
