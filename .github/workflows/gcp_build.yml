@@ -31,7 +31,7 @@ jobs:
     if: success()
     uses: ./.github/workflows/build.yml
     with:
-      fresh_install: ${{ github.event.inputs.fresh_install }}
+      fresh_install: ${{ github.event.inputs.fresh_install == 'true' }}
       clean_dir: ${{ github.event.inputs.clean_dir }}
     secrets:
       RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
