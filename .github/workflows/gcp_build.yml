@@ -27,7 +27,6 @@ jobs:
     secrets: inherit
 
   build:
-    # Workflow file call
     needs: start-vm
     if: success()
     uses: ./.github/workflows/build.yml
