@@ -15,7 +15,7 @@ GIT_EMAIL="rom-builder@rest.eu.org"
 GITHUB_RELEASE_REPO="rom-builder/$DEVICE-$ROM_NAME"
 
 # Required: To upload the build, set this
-RELEASE_FILES_PATTERN="*.zip|*.md5sum|*.sha256sum"
+RELEASE_FILES_PATTERN="*.zip|*.md5sum|*.sha256sum|*.txt|*.prop"
 
 # Required: Repos to clone
 # Example repos.json:
