@@ -9,10 +9,6 @@ on:
         default: 'start'
         choices: ['start', 'stop', 'restart']
   workflow_call:
-    env:
-      PERFORM_ACTION:
-        description: 'Action to perform'
-        required: true
     secrets:
       GCP_CREDENTIALS:
         description: 'GCP Credentials'
