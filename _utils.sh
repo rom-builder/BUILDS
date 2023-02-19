@@ -188,31 +188,6 @@ clean_build() {
   fi
 }
 
-github_create_repo() {
-  while [[ "$#" -gt 0 ]]; do
-    case $1 in
-      -tk|--token) token="$2"; shift ;;
-      -n|--name) name="$2"; shift ;;
-      -d|--description) description="$2"; shift ;;
-      *) echo "Unknown parameter passed: $1"; exit 1 ;;
-    esac
-    shift
-  done
-
-  # check if all variables are set
-  required_vars=(token name description)
-  for var in "${required_vars[@]}"; do
-    if [ -z "${!var}" ]; then
-      echo "Variable $var is not set. Aborting."
-      return
-    fi
-  done
-
-  # Create the repo with auto_init
-  echo "Creating repo $name..."
-  local create_repo_response=$(curl -s 
-}
-
 github_release() {
   while [[ "$#" -gt 0 ]]; do
     case $1 in
