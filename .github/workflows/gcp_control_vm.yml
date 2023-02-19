@@ -9,10 +9,6 @@ on:
         default: 'start'
         choices: ['start', 'stop', 'restart']
   workflow_call:
-    env:
-      PERFORM_ACTION:
-        description: 'Action to perform'
-        required: true
     secrets:
       GCP_CREDENTIALS:
         description: 'GCP Credentials'
@@ -32,7 +28,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set PERFORM_ACTION
-        if: ${{ github.event.inputs.action }}
+        if: ${{ !env.PERFORM_ACTION }}
         run: |
           echo "PERFORM_ACTION=${{ github.event.inputs.action }}" >> $GITHUB_ENV
 
