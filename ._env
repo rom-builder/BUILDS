@@ -61,7 +61,7 @@ SYNC_SOURCE_COMMAND="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundl
 # Required: Build command either for vanilla or gapps or both
 
 # Vanilla build command
-BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE | tee log.txt"
+BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE"
 
 # GApps build command
 BUILD_GAPPS_COMMAND=""
