@@ -12,7 +12,7 @@ GIT_EMAIL="rom-builder@rest.eu.org"
 # RELEASE_GITHUB_TOKEN="" 
 
 # Required: Repository owner/repo to upload and release build files
-GITHUB_RELEASE_REPO="Miatoll-VoltageOS"
+GITHUB_RELEASE_REPO="rom-builder/$DEVICE-$ROM_NAME"
 
 # Required: To upload the build, set this
 RELEASE_FILES_PATTERN="*.zip|*.md5sum|*.sha256sum|*.txt|*.prop"
