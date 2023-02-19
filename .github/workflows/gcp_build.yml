@@ -40,10 +40,10 @@ jobs:
     needs: start-vm
     if: success()
     uses: ./.github/workflows/build.yml
-    # secrets:
-    #   RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
-    #   TG_TOKEN: ${{ secrets.TG_TOKEN }}
-    #   TG_CHAT: ${{ secrets.TG_CHAT }}
+    secrets:
+      RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+      TG_TOKEN: ${{ secrets.TG_TOKEN }}
+      TG_CHAT: ${{ secrets.TG_CHAT }}
 
   stop-vm:
     runs-on: ubuntu-latest
