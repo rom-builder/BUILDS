@@ -144,12 +144,29 @@ create_repo() {
 
 git_clone_json() {
   local json_file="$1"
+  local before_sync="$2"
   # Check if the file exists
   if [ ! -f "$json_file" ]; then
     logt "File $json_file does not exist. Aborting."
     exit 1
   fi
   for repo in $(jq -r '.repos[].repo' $json_file); do
+    before_sync_repo=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .before_sync' $json_file)
+
+    # if before_sync is true then clone only the repos with before_sync set to true
+    if [ "$before_sync" == "true" ]; then
+      if [ "$before_sync_repo" != "true" ]; then
+        continue
+      fi
+    fi
+
+    # if before_sync is false or null then skip the repos with before_sync set to true
+    if [ -z "$before_sync" ] || [ "$before_sync" == "false" ]; then
+      if [ "$before_sync_repo" == "true" ]; then
+        continue
+      fi
+    fi
+
     dir=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .dir' $json_file)
     branch=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .branch' $json_file)
     pre_command=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .pre_command' $json_file)
