@@ -12,8 +12,9 @@ on:
   workflow_call:
     inputs:
       action:
-        description: 'Action to perform'
         required: true
+        type: choice
+        options: ['start', 'stop', 'restart']
     secrets:
       GCP_CREDENTIALS:
         description: 'GCP Credentials'
