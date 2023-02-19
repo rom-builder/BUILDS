@@ -59,7 +59,7 @@ SYNC_SOURCE_COMMAND="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundl
 # PRE_BUILD_COMMAND=""
 
 # Vanilla build command 
-BUILD_VANILLA_COMMAND=". build/env* && lunch voltage_miatoll-userdebug && brunch miatoll | tee log.txt"
+BUILD_VANILLA_COMMAND=". build/env* && lunch voltage_miatoll-userdebug && brunch miatoll"
 
 # GApps build command
 BUILD_GAPPS_COMMAND=""
