@@ -5,9 +5,9 @@ on:
       action:
         description: 'Action to perform'
         required: true
-        type: choice
-        default: 'start'
+        type: choices
         choices: ['start', 'stop', 'restart']
+        default: 'start'
   workflow_call:
     secrets:
       GCP_CREDENTIALS:
