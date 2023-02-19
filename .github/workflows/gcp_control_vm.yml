@@ -7,7 +7,7 @@ on:
         required: true
         type: choices
         choices: ['start', 'stop', 'restart']
-        default: 'start'
+        default: 'stop'
   workflow_call:
     secrets:
       GCP_CREDENTIALS:
