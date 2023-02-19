@@ -1,0 +1,67 @@
+name: Start VM and run command
+
+on:
+  workflow_dispatch:
+    inputs:
+      fresh_install:
+        description: 'Do you want to clean everything and start fresh?. All git repos are updated automatically. Do not check this if a build has failed because of some error, just re run workflow without checking this. This will reduce build time significantly.'
+        type: boolean
+        required: false
+        default: false
+      clean_dir:
+        description: 'Ignore this if you have set above fresh install. Specify directories to be removed with spaces (if a directory name contains space enlcose with ""). Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
+        required: false
+        type: string
+        default: ''
+
+jobs:
+  start-vm:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Authenticate"
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+          
+      - name: Start VM instance
+        run: |
+          gcloud compute instances start ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
+
+      - name: Run command on VM
+        run: |
+            gcloud compute ssh ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "cd actions-runner && nohup ./run.sh >> runner.log &"
+
+  build:
+    # Workflow file call
+    needs: start-vm
+    if: success()
+    uses: ./.github/workflows/build.yml
+    inputs:
+      fresh_install: ${{ github.event.inputs.fresh_install }}
+      clean_dir: ${{ github.event.inputs.clean_dir }}
+    # secrets:
+    #   RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
+    #   TG_TOKEN: ${{ secrets.TG_TOKEN }}
+    #   TG_CHAT: ${{ secrets.TG_CHAT }}
+
+  stop-vm:
+    runs-on: ubuntu-latest
+    needs: build
+    if: always()
+    steps:
+      - name: "Authenticate"
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+
+      - name: Stop VM instance
+        run: |
+          gcloud compute instances stop ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
