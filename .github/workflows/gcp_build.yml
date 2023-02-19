@@ -45,8 +45,6 @@ jobs:
     needs: start-vm
     if: success()
     uses: ./.github/workflows/build.yml
-    environment: 
-      name: Builder
     secrets:
       RELEASE_GITHUB_TOKEN: ${{ secrets.RELEASE_GITHUB_TOKEN }}
       TG_TOKEN: ${{ secrets.TG_TOKEN }}
