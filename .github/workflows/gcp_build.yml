@@ -41,5 +41,5 @@ jobs:
     if: always()
     uses: ./.github/workflows/gcp_control_vm.yml
     with:
-      PERFORM_ACTION: 'stop'
+      action: 'stop'
     secrets: inherit
