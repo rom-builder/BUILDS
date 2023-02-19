@@ -13,8 +13,7 @@ on:
     inputs:
       action:
         required: true
-        type: choice
-        options: ['start', 'stop', 'restart']
+        type: string
     secrets:
       GCP_CREDENTIALS:
         description: 'GCP Credentials'
