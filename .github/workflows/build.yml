@@ -20,7 +20,6 @@ on:
       clean_dir:
         required: true
         type: string
-
     secrets:
       RELEASE_GITHUB_TOKEN:
         description: 'GitHub Token for Releases'
