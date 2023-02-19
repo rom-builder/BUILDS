@@ -1,28 +1,28 @@
 name: Build ROM
 on:
-  # workflow_dispatch:
-  #   inputs:
-  #     fresh_install:
-  #       description: 'Do you want to clean everything and start fresh?. All git repos are updated automatically. Do not check this if a build has failed because of some error, just re run workflow without checking this. This will reduce build time significantly.'
-  #       type: boolean
-  #       required: false
-  #       default: false
-  #     clean_dir:
-  #       description: 'Ignore this if you have set above fresh install. Specify directories to be removed with spaces (if a directory name contains space enlcose with ""). Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
-  #       required: false
-  #       type: string
-  #       default: ''
+  workflow_dispatch:
+    inputs:
+      fresh_install:
+        description: 'Do you want to clean everything and start fresh?. All git repos are updated automatically. Do not check this if a build has failed because of some error, just re run workflow without checking this. This will reduce build time significantly.'
+        type: boolean
+        required: false
+        default: false
+      clean_dir:
+        description: 'Ignore this if you have set above fresh install. Specify directories to be removed with spaces (if a directory name contains space enlcose with ""). Warning! This runs (rm -rf <dirs>) command. Output directory is cleaned by default.'
+        required: false
+        type: string
+        default: ''
   workflow_call:
-    # secrets:
-    #   RELEASE_GITHUB_TOKEN:
-    #     description: 'GitHub Token for Releases'
-    #     required: true
-    #   TG_TOKEN:
-    #     description: 'Telegram Bot Token'
-    #     required: true
-    #   TG_CHAT:
-    #     description: 'Telegram Chat ID'
-    #     required: true
+    secrets:
+      RELEASE_GITHUB_TOKEN:
+        description: 'GitHub Token for Releases'
+        required: true
+      TG_TOKEN:
+        description: 'Telegram Bot Token'
+        required: true
+      TG_CHAT:
+        description: 'Telegram Chat ID'
+        required: true
 
 jobs:
   build:
