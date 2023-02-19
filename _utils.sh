@@ -121,6 +121,13 @@ git_clone_json() {
     logt "File $json_file does not exist. Aborting."
     exit 1
   fi
+
+  if [ "$before_sync" == "true" ]; then
+    logt "Pulling repos required before sync..."
+  else
+    logt "Pulling repos required after sync..."
+  fi
+
   for repo in $(jq -r '.repos[].repo' $json_file); do
     before_sync_repo=$(jq -r --arg repo "$repo" '.repos[] | select(.repo == $repo) | .before_sync' $json_file)
 
