@@ -15,7 +15,9 @@ on:
         default: ''
 
 # queue up builds to prevent failures on progress of other builds
-concurrency: building_vm
+concurrency: 
+  group: building_vm
+  cancel-in-progress: false
 
 jobs:
   start-vm:
