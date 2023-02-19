@@ -24,11 +24,7 @@ jobs:
     uses: ./.github/workflows/gcp_control_vm.yml
     with:
       PERFORM_ACTION: 'start'
-    secrets:
-      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      INSTANCE_NAME: ${{ secrets.INSTANCE_NAME }}
-      ZONE: ${{ secrets.ZONE }}
-      VM_USERNAME: ${{ secrets.VM_USERNAME }}
+    secrets: inherit
 
   build:
     # Workflow file call
@@ -46,8 +42,4 @@ jobs:
     uses: ./.github/workflows/gcp_control_vm.yml
     with:
       PERFORM_ACTION: 'stop'
-    secrets:
-      GCP_CREDENTIALS: ${{ secrets.GCP_CREDENTIALS }}
-      INSTANCE_NAME: ${{ secrets.INSTANCE_NAME }}
-      ZONE: ${{ secrets.ZONE }}
-      VM_USERNAME: ${{ secrets.VM_USERNAME }}
+    secrets: inherit
