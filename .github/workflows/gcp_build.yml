@@ -1,4 +1,4 @@
-name: Start VM and run command
+name: Build on VM
 
 on:
   workflow_dispatch:
