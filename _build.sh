@@ -4,16 +4,22 @@ source _utils.sh
 source ._env # remove this line if you want to environment variables to be set in the shell or use a different method to set them
 
 # Check if required variables are set
-req_vars=("DEVICE" "ROM_NAME" "GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "BUILD_VANILLA_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "RELEASE_OUT_DIR" "RELEASE_FILES_PATTERN")
+req_vars=("DEVICE" "ROM_NAME" "GIT_NAME" "GIT_EMAIL" "REPOS_JSON" "SETUP_SOURCE_COMMAND" "SYNC_SOURCE_COMMAND" "RELEASE_GITHUB_TOKEN" "GITHUB_RELEASE_REPO" "RELEASE_OUT_DIR" "RELEASE_FILES_PATTERN")
 for var in "${req_vars[@]}"; do
     if [ -z "${!var}" ]; then
-        echo "Required variable $var is not set. Please set it in .env"
+        echo "Required variable $var is not set. Please set it in ._env"
         exit 1
     fi
 done
 
 telegram_send_message "⏳"
 telegram_send_message "*Build Initiated*: [$ROM_NAME for $DEVICE]($GITHUB_RUN_URL)" true
+
+# Check either BUILD_VANILLA_COMMAND or BUILD_GAPPS_COMMAND is set
+if [ -z "$BUILD_VANILLA_COMMAND" ] && [ -z "$BUILD_GAPPS_COMMAND" ]; then
+    logt "Either BUILD_VANILLA_COMMAND or BUILD_GAPPS_COMMAND is not set. Please set it in ._env"
+    exit 1
+fi
 
 echo "Starting build..."
 start_time=$(date +%s)
@@ -82,20 +88,25 @@ if [ -n "$PRE_BUILD_COMMAND" ]; then
 fi
 
 # Build Vanilla
-logt "Building vanilla..."
-# if LOG_OUTPUT is set to false then don't log output
-if [ "$LOG_OUTPUT" == "false" ]; then
-    eval $BUILD_VANILLA_COMMAND
-    if [ $? -ne 0 ]; then
-        logt "Vanilla build failed. Aborting."
+# if BUILDS_VANILLA_SCRIPT is set else skip
+if [ -n "$BUILD_VANILLA_COMMAND" ]; then
+    logt "Building vanilla..."
+    # if LOG_OUTPUT is set to false then don't log output
+    if [ "$LOG_OUTPUT" == "false" ]; then
+        eval $BUILD_VANILLA_COMMAND
+        if [ $? -ne 0 ]; then
+            logt "Vanilla build failed. Aborting."
+        fi
+    else
+        vanilla_log_file="vanilla_build_log.txt"
+        eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
+        if [ $? -ne 0 ]; then
+            logt "Vanilla build failed. Aborting."
+        fi
+        telegram_send_file $vanilla_log_file "Vanilla build log"
     fi
 else
-    vanilla_log_file="vanilla_build_log.txt"
-    eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
-    if [ $? -ne 0 ]; then
-        logt "Vanilla build failed. Aborting."
-    fi
-    telegram_send_file $vanilla_log_file "Vanilla build log"
+    echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
 fi
 
 # Build GApps
