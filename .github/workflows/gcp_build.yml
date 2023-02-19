@@ -23,7 +23,7 @@ jobs:
   start-vm:
     uses: ./.github/workflows/gcp_control_vm.yml
     with:
-      PERFORM_ACTION: 'start'
+      action: 'start'
     secrets: inherit
 
   build:
