@@ -51,7 +51,7 @@ fi
 
 # Call git_clone_json for repos with before_sync true
 git_clone_before_sync_log_file="clone_repos_before_sync_log.txt"
-git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file
+(git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file)
 if [ $? -ne 0 ]; then
     logt "Cloning repos for before_sync failed. Aborting."
     telegram_send_file $git_clone_before_sync_log_file "Cloning repos log"
@@ -66,11 +66,11 @@ fi
 
 # Sync source
 logt "Syncing source..."
-eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt
+(eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt)
 if [ $? -ne 0 ]; then
     echo "Sync failed. Aborting."
     telegram_send_message "Sync failed. Aborting."
-    telegram_send_file sync_source_log.txt "Sync  source log"
+    telegram_send_file sync_source_log.txt "Sync source log"
     exit 1
 fi
 
@@ -81,7 +81,7 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Clone repos
-git_clone_json $REPOS_JSON | tee clone_repos_log.txt
+(git_clone_json $REPOS_JSON | tee clone_repos_log.txt)
 if [ $? -ne 0 ]; then
     logt "Cloning repos failed. Aborting."
     telegram_send_file clone_repos_log.txt "Clone repos log"
@@ -100,13 +100,13 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
     logt "Building vanilla..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
-        eval $BUILD_VANILLA_COMMAND
+        (eval $BUILD_VANILLA_COMMAND)
         if [ $? -ne 0 ]; then
             logt "Vanilla build failed. Aborting."
         fi
     else
         vanilla_log_file="vanilla_build_log.txt"
-        eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file
+        (eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file)
         if [ $? -ne 0 ]; then
             logt "Vanilla build failed. Aborting."
         fi
@@ -123,12 +123,12 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     logt "Building GApps..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
-        eval $BUILD_GAPPS_COMMAND
+        (eval $BUILD_GAPPS_COMMAND)
         if [ $? -ne 0 ]; then
             logt "GApps build failed. Aborting."
         fi
     else
-        eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file
+        (eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file)
         if [ $? -ne 0 ]; then
             logt "GApps build failed. Aborting."
         fi
@@ -140,7 +140,10 @@ fi
 
 # Release builds
 tag=$(date +'v%d-%m-%Y-%H%M%S')
-github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN
+(github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN)
+if [ $? -ne 0 ]; then
+    logt "Releasing builds failed. Aborting."
+fi
 
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
