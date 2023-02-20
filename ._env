@@ -1,6 +1,6 @@
 # Required: Device codename
 DEVICE="vince"
-ROM_NAME="PixelExperience"
+ROM_NAME="PixelOS"
 
 # Required: git username
 GIT_NAME="ROMBUILDER"
@@ -41,7 +41,7 @@ RELEASE_OUT_DIR="out/target/product/$DEVICE"
 # PRE_SETUP_SOURCE_COMMAND=""
 
 # Required:
-SETUP_SOURCE_COMMAND="repo init --depth=1 --no-repo-verify -u https://github.com/PixelExperience/manifest -b thirteen-plus -g default,-mips,-darwin,-notdefault"
+SETUP_SOURCE_COMMAND="repo init -u https://github.com/PixelOS-AOSP/manifest.git -b thirteen"
 
 # Optional: If you have any post command to run after setting up source
 # POST_SETUP_SOURCE_COMMAND=""
@@ -50,7 +50,7 @@ SETUP_SOURCE_COMMAND="repo init --depth=1 --no-repo-verify -u https://github.com
 # PRE_SYNC_SOURCE_COMMAND=""
 
 # Required:
-SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --no-tags --optimized-fetch --prune --force-sync -j8"
+SYNC_SOURCE_COMMAND="repo sync"
 
 # Optional: If you have any post command to run after syncing source
 # POST_SYNC_SOURCE_COMMAND=""
@@ -64,7 +64,7 @@ SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --no-tags --optimized-fetch 
 # BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE"
 
 # GApps build command
-BUILD_GAPPS_COMMAND="source build/envsetup.sh && lunch aosp_vince-user && mka bacon"
+BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch aosp_vince-user && make bacon"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
