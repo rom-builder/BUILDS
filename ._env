@@ -50,7 +50,7 @@ SETUP_SOURCE_COMMAND="repo init -u https://github.com/PixelOS-AOSP/manifest.git 
 # PRE_SYNC_SOURCE_COMMAND=""
 
 # Required:
-SYNC_SOURCE_COMMAND="repo sync"
+SYNC_SOURCE_COMMAND="repo sync --force-sync --no-tags --no-clone-bundle -j$(nproc --all)"
 
 # Optional: If you have any post command to run after syncing source
 # POST_SYNC_SOURCE_COMMAND=""
@@ -64,7 +64,7 @@ SYNC_SOURCE_COMMAND="repo sync"
 # BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE"
 
 # GApps build command
-BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch aosp_vince-user && make bacon"
+BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch aosp_vince-user && mka bacon -j$(nproc --all)"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
