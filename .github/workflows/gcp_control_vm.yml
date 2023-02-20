@@ -31,7 +31,17 @@ on:
 jobs:
   control-vm:
     runs-on: ubuntu-latest
-    steps:  
+    steps:
+      - name: Cache SSH
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.ssh
+            ~/work/_temp/
+          key: ${{ runner.os }}-gcp-control-vm
+          restore-keys: |
+            ${{ runner.os }}-gcp-control-vm
+            
       - name: "Authenticate"
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
