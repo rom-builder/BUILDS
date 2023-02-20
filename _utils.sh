@@ -123,9 +123,9 @@ git_clone_json() {
   fi
 
   if [ "$before_sync" == "true" ]; then
-    logt "Pulling repos required before sync..."
+    echo "Pulling repos required before sync..."
   else
-    logt "Pulling repos required after sync..."
+    echo "Pulling repos required after sync..."
   fi
 
   for repo in $(jq -r '.repos[].repo' $json_file); do
