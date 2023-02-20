@@ -32,7 +32,7 @@ jobs:
   control-vm:
     runs-on: ubuntu-latest
     steps:
-      - name: Cache Dependencies
+      - name: Cache SSH
         uses: actions/cache@v3
         with:
           path: |
