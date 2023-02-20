@@ -37,7 +37,6 @@ jobs:
         with:
           path: |
             ~/.ssh
-            ~/.cache
             ~/google-cloud-sdk
           key: ${{ runner.os }}-gcp-build
           restore-keys: |
