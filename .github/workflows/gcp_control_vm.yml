@@ -39,9 +39,9 @@ jobs:
             ~/.ssh
             ~/.cache
             ~/google-cloud-sdk
-          key: ${{ runner.os }}-gcp-build-${{ hashFiles('~/.ssh/**', '~/.cache/**', '~/google-cloud-sdk/**') }}
+          key: ${{ runner.os }}-gcp-build
           restore-keys: |
-            ${{ runner.os }}-gcp-build-
+            ${{ runner.os }}-gcp-build
             
       - name: "Authenticate"
         id: 'auth'
