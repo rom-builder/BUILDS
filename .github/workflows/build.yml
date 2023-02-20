@@ -12,6 +12,29 @@ on:
         required: false
         type: string
         default: ''
+  workflow_call:
+    inputs:
+      fresh_install:
+        required: true
+        type: boolean
+      clean_dir:
+        required: true
+        type: string
+    secrets:
+      RELEASE_GITHUB_TOKEN:
+        description: 'GitHub Token for Releases'
+        required: true
+      TG_TOKEN:
+        description: 'Telegram Bot Token'
+        required: true
+      TG_CHAT:
+        description: 'Telegram Chat ID'
+        required: true
+
+# queue up builds to prevent failures on progress of other builds
+concurrency:
+  group: building_rom
+  cancel-in-progress: false
 
 jobs:
   build:
