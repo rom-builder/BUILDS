@@ -1,8 +1,9 @@
 {
   "repos": [
-    {
+    { 
+      "pre_command": "rm -rf .repo/local_manifests",
       "repo": "https://github.com/rabilrbl/local_manifest_anandhan.git",
-      "branch": "pixelexperience-13.0",
+      "branch": "pixelos-13.0",
       "dir": ".repo/local_manifests",
       "before_sync": true
     }
