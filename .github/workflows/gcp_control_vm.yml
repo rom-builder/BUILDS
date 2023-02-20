@@ -32,6 +32,17 @@ jobs:
   control-vm:
     runs-on: ubuntu-latest
     steps:
+      - name: Cache Dependencies
+        uses: actions/cache@v2
+        with:
+          path: |
+            ~/.ssh
+            ~/.cache
+            ~/google-cloud-sdk
+          key: ${{ runner.os }}-gcp-build-${{ hashFiles('~/.ssh/**', '~/.cache/**', '~/google-cloud-sdk/**') }}
+          restore-keys: |
+            ${{ runner.os }}-gcp-build-
+            
       - name: "Authenticate"
         id: 'auth'
         uses: 'google-github-actions/auth@v1'
