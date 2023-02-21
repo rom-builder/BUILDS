@@ -1,7 +1,7 @@
 {
   "repos": [
     {
-      "repo": "https://github.com/rabilrbl/local_manifest_anandhan.git",
+      "repo": "https://github.com/rom-builder/local_manifest.git",
       "branch": "bananadroid-13.0",
       "dir": ".repo/local_manifests",
       "before_sync": true
