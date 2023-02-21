@@ -37,10 +37,9 @@ jobs:
         with:
           path: |
             ~/.ssh
-            ~/work/_temp/
-          key: ${{ runner.os }}-gcp-control-vm
+          key: ${{ runner.os }}-gcp-control-vm-ssh
           restore-keys: |
-            ${{ runner.os }}-gcp-control-vm
+            ${{ runner.os }}-gcp-control-vm-ssh
             
       - name: "Authenticate"
         id: 'auth'
