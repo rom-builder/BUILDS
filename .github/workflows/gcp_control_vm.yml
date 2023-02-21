@@ -1,0 +1,51 @@
+name: "Control VM"
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: 'Action to perform'
+        required: true
+        type: choice
+        options: ['start', 'stop']
+        default: 'stop'
+
+  workflow_call:
+    inputs:
+      action:
+        required: true
+        type: string
+    secrets:
+      GCP_CREDENTIALS:
+        description: 'GCP Credentials'
+        required: true
+      INSTANCE_NAME:
+        description: 'Instance name'
+        required: true
+      ZONE:
+        description: 'Zone'
+        required: true
+      VM_USERNAME:
+        description: 'VM Username'
+        required: true
+
+jobs:
+  control-vm:
+    runs-on: ubuntu-latest
+    steps:  
+      - name: "Authenticate"
+        id: 'auth'
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_CREDENTIALS }}'
+
+      - name: 'Set up Cloud SDK'
+        uses: 'google-github-actions/setup-gcloud@v1'
+          
+      - name: Perform action on VM
+        run: |
+          gcloud compute instances ${{ inputs.action }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
+
+      - name: Run command on VM
+        if: ${{ inputs.action == 'start' }}
+        run: |
+            gcloud compute ssh ${{ secrets.VM_USERNAME }}@${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "((cd ~/actions-runner && ./run.sh >> runner.log &) > /dev/null 2>&1 &) && exit"
