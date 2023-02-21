@@ -31,7 +31,7 @@ resolve_dependencies | tee resolve_dependencies_log.txt
 git_setup $GIT_NAME $GIT_EMAIL
 
 # Cleanup old builds
-clean_build $RELEASE_OUT_DIR
+# clean_build $RELEASE_OUT_DIR
 
 # if PRE_SETUP_SOURCE_COMMAND is set then run it
 if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
