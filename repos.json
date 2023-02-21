@@ -1,34 +1,10 @@
 {
-    "repos": [
-        {
-            "repo":"https://github.com/anandhan07/android_device_xiaomi_vince",
-            "branch":"ricedroid-13.0",
-            "dir":"device/xiaomi/vince"
-        },
-        {
-            "repo":"https://github.com/anandhan07/android_vendor_xiaomi_vince",
-            "dir":"vendor/xiaomi/vince",
-            "branch":"13.0"
-        },
-        {
-            "repo":"https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince",
-            "dir":"kernel/xiaomi/vince",
-            "branch":"master"
-        },
-            {
-      "repo": "https://gitlab.com/anandhan07/aosp-clang.git",
-      "branch": "clang-16.0.2",
-      "dir": "prebuilts/clang/host/linux-x86/clang-r475365b"
-    },
-        {
-            "repo":"https://github.com/iusmac/RevampedFMRadio",
-            "dir":"packages/apps/RevampedFMRadio",
-            "branch":"qcom"
-        },
-        {
-            "repo":"https://gitlab.com/anandhan07/packages_apps_ViPER4AndroidFX.git",
-            "dir":"packages/apps/ViPER4AndroidFX",
-            "branch":"master"
-        }
-    ]
+  "repos": [
+    {
+      "repo": "https://github.com/rabilrbl/local_manifest_anandhan.git",
+      "branch": "ricedroid-13.0",
+      "dir": ".repo/local_manifests",
+      "before_sync": true
+    }
+  ]
 }
