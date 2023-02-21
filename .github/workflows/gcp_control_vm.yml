@@ -6,7 +6,7 @@ on:
         description: 'Action to perform'
         required: true
         type: choice
-        options: ['start', 'stop', 'restart']
+        options: ['start', 'stop']
         default: 'stop'
 
   workflow_call:
@@ -46,6 +46,6 @@ jobs:
           gcloud compute instances ${{ inputs.action }} ${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }}
 
       - name: Run command on VM
-        if: ${{ inputs.action == 'start' || inputs.action == 'restart' }}
+        if: ${{ inputs.action == 'start' }}
         run: |
             gcloud compute ssh ${{ secrets.VM_USERNAME }}@${{ secrets.INSTANCE_NAME }} --zone=${{ secrets.ZONE }} --ssh-flag="-o BatchMode=yes" --command "((cd ~/actions-runner && ./run.sh >> runner.log &) > /dev/null 2>&1 &) && exit"
