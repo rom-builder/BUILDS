@@ -1,6 +1,6 @@
 # Required: Device codename
 DEVICE="vince"
-ROM_NAME="RiceDroid"
+ROM_NAME="BananaDroid"
 
 # Required: git username
 GIT_NAME="ROMBUILDER"
@@ -41,7 +41,7 @@ RELEASE_OUT_DIR="out/target/product/$DEVICE"
 # PRE_SETUP_SOURCE_COMMAND=""
 
 # Required:
-SETUP_SOURCE_COMMAND=""
+SETUP_SOURCE_COMMAND="repo init -u https://github.com/bananadroid/android_manifest.git -b 13"
 
 # Optional: If you have any post command to run after setting up source
 # POST_SETUP_SOURCE_COMMAND=""
@@ -50,7 +50,7 @@ SETUP_SOURCE_COMMAND=""
 # PRE_SYNC_SOURCE_COMMAND=""
 
 # Required:
-SYNC_SOURCE_COMMAND=""
+SYNC_SOURCE_COMMAND="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundle --no-tags --optimized-fetch --prune"
 
 # Optional: If you have any post command to run after syncing source
 # POST_SYNC_SOURCE_COMMAND=""
@@ -61,7 +61,7 @@ SYNC_SOURCE_COMMAND=""
 # Required: Build command either for vanilla or gapps or both
 
 # Vanilla build command
-BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE"
+BUILD_VANILLA_COMMAND=". build/envsetup.sh && lunch banana_$DEVICE-user && m banana"
 
 # GApps build command
 BUILD_GAPPS_COMMAND=""
