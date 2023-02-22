@@ -120,6 +120,7 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
     end_time_vanilla=$(date +%s)
     vanilla_time_taken=$(compute_build_time $start_time_vanilla $end_time_vanilla)
     logt "Vanilla build completed in $vanilla_time_taken"
+    (remove_ota_package) # remove ota package if present
 else
     echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
 fi
@@ -146,6 +147,7 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     end_time_gapps=$(date +%s)
     gapps_time_taken=$(compute_build_time $start_time_gapps $end_time_gapps)
     logt "GApps build completed in $gapps_time_taken"
+    (remove_ota_package) # remove ota package if present
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
