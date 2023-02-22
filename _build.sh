@@ -142,7 +142,7 @@ else
 fi
 
 # Release builds
-tag=$(date +'v%d-%m-%Y-%H%M%S')
+tag=$(date +'v%d-%m-%Y-%H%M')
 (github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN)
 if [ $? -ne 0 ]; then
     logt "Releasing builds failed. Aborting."
