@@ -327,7 +327,7 @@ remove_ota_package() {
   if [ -n "$ota_package" ]; then
     base_filename=$(basename $ota_package)
     echo "Removing OTA package $base_filename"
-    rm -f $RELEASE_OUT_DIR/$ota_package
+    rm -f $ota_package
   else
     echo "No OTA package found to remove."
   fi
