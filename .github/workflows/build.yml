@@ -84,4 +84,4 @@ jobs:
         with:
           name: Logs
           path: |
-            *.txt
+            *.log
