@@ -152,6 +152,12 @@ else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
 
+# if POST_BUILD_COMMAND is set then run it
+if [ -n "$POST_BUILD_COMMAND" ]; then
+    echo "Running post-build command..."
+    eval $POST_BUILD_COMMAND
+fi
+
 # Release builds
 tag=$(date +'v%d-%m-%Y-%H%M')
 (github_release --token $RELEASE_GITHUB_TOKEN --repo $GITHUB_RELEASE_REPO --tag $tag --pattern $RELEASE_FILES_PATTERN)
@@ -166,9 +172,3 @@ telegram_send_message "Total time taken *$time_taken*"
 echo "Total time taken $time_taken"
 
 logt "Build finished."
-
-# if POST_BUILD_COMMAND is set then run it
-if [ -n "$POST_BUILD_COMMAND" ]; then
-    echo "Running post-build command..."
-    eval $POST_BUILD_COMMAND
-fi
