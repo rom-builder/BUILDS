@@ -316,5 +316,22 @@ compute_build_time() {
   fi
 }
 
+remove_ota_package() {
+  # if REMOVE_OTA_PACKAGE is not set or is false, return
+  if [ -z "$REMOVE_OTA_PACKAGE" ] || [ "$REMOVE_OTA_PACKAGE" == "false" ]; then
+    echo "REMOVE_OTA_PACKAGE is not set or is false. Skipping removal of OTA package."
+    return
+  fi
+  # Remove OTA package if exists with name *_$DEVICE-ota-*.$USER.zip
+  local ota_package=$(ls $RELEASE_OUT_DIR/*_$DEVICE-ota-*.$USER.zip)
+  if [ -n "$ota_package" ]; then
+    base_filename=$(basename $ota_package)
+    echo "Removing OTA package $base_filename"
+    rm -f $RELEASE_OUT_DIR/$ota_package
+  else
+    echo "No OTA package found to remove."
+  fi
+}
+
 # Export functions
 export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release telegram_send_message telegram_send_file update_tg logt
