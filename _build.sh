@@ -21,7 +21,6 @@ if [ -z "$BUILD_VANILLA_COMMAND" ] && [ -z "$BUILD_GAPPS_COMMAND" ]; then
     exit 1
 fi
 
-echo "Starting build..."
 start_time=$(date +%s)
 
 # Install dependencies
@@ -66,6 +65,7 @@ fi
 
 # Sync source
 logt "Syncing source..."
+start_time_sync=$(date +%s)
 (eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt)
 if [ $? -ne 0 ]; then
     echo "Sync failed. Aborting."
@@ -73,6 +73,10 @@ if [ $? -ne 0 ]; then
     telegram_send_file sync_source_log.txt "Sync source log"
     exit 1
 fi
+end_time_sync=$(date +%s)
+sync_time_taken=$(compute_build_time $start_time_sync $end_time_sync)
+logt "Sync completed in $sync_time_taken"
+
 
 # if POST_SYNC_SOURCE_COMMAND is set then run it
 if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
@@ -97,6 +101,7 @@ fi
 # Build Vanilla
 # if BUILDS_VANILLA_SCRIPT is set else skip
 if [ -n "$BUILD_VANILLA_COMMAND" ]; then
+    start_time_vanilla=$(date +%s)
     logt "Building vanilla..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
@@ -112,6 +117,9 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
         fi
         telegram_send_file $vanilla_log_file "Vanilla build log"
     fi
+    end_time_vanilla=$(date +%s)
+    vanilla_time_taken=$(compute_build_time $start_time_vanilla $end_time_vanilla)
+    logt "Vanilla build completed in $vanilla_time_taken"
 else
     echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
 fi
@@ -119,6 +127,7 @@ fi
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
+    start_time_gapps=$(date +%s)
     gapps_log_file="gapps_build_log.txt"
     logt "Building GApps..."
     # if LOG_OUTPUT is set to false then don't log output
@@ -134,6 +143,9 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
         fi
         telegram_send_file $gapps_log_file "GApps build log"
     fi
+    end_time_gapps=$(date +%s)
+    gapps_time_taken=$(compute_build_time $start_time_gapps $end_time_gapps)
+    logt "GApps build completed in $gapps_time_taken"
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
 fi
@@ -148,9 +160,10 @@ fi
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(compute_build_time $start_time $end_time)
-telegram_send_message "Build finished in *$time_taken*" true
+telegram_send_message "Total time taken *$time_taken*"
+echo "Total time taken $time_taken"
 
-echo "Build finished in $time_taken"
+logt "Build finished."
 
 # if POST_BUILD_COMMAND is set then run it
 if [ -n "$POST_BUILD_COMMAND" ]; then
