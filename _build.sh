@@ -24,7 +24,7 @@ fi
 start_time=$(date +%s)
 
 # Install dependencies
-resolve_dependencies | tee resolve_dependencies_log.txt
+resolve_dependencies | tee resolve_dependencies.log
 
 # Setup git
 git_setup $GIT_NAME $GIT_EMAIL
@@ -49,7 +49,7 @@ if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
 fi
 
 # Call git_clone_json for repos with before_sync true
-git_clone_before_sync_log_file="clone_repos_before_sync_log.txt"
+git_clone_before_sync_log_file="clone_repos_before_sync.log"
 (git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file)
 if [ $? -ne 0 ]; then
     logt "Cloning repos for before_sync failed. Aborting."
@@ -66,11 +66,11 @@ fi
 # Sync source
 logt "Syncing source..."
 start_time_sync=$(date +%s)
-(eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt)
+(eval  $SYNC_SOURCE_COMMAND | tee sync_source.log)
 if [ $? -ne 0 ]; then
     echo "Sync failed. Aborting."
     telegram_send_message "Sync failed. Aborting."
-    telegram_send_file sync_source_log.txt "Sync source log"
+    telegram_send_file sync_source.log "Sync source log"
     exit 1
 fi
 end_time_sync=$(date +%s)
@@ -85,10 +85,10 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Clone repos
-(git_clone_json $REPOS_JSON | tee clone_repos_log.txt)
+(git_clone_json $REPOS_JSON | tee clone_repos.log)
 if [ $? -ne 0 ]; then
     logt "Cloning repos failed. Aborting."
-    telegram_send_file clone_repos_log.txt "Clone repos log"
+    telegram_send_file clone_repos.log "Clone repos log"
     exit 1
 fi
 
@@ -110,7 +110,7 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
             logt "Vanilla build failed. Aborting."
         fi
     else
-        vanilla_log_file="vanilla_build_log.txt"
+        vanilla_log_file="vanilla_build.log"
         (eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file)
         if [ $? -ne 0 ]; then
             logt "Vanilla build failed. Aborting."
@@ -128,7 +128,7 @@ fi
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
     start_time_gapps=$(date +%s)
-    gapps_log_file="gapps_build_log.txt"
+    gapps_log_file="gapps_build.log"
     logt "Building GApps..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
