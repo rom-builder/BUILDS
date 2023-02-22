@@ -76,3 +76,5 @@ BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch aosp_vince-user && mka bacon -
 # TG_TOKEN="" # Your bot token
 # TG_CHAT="" # Your chat id
 
+# Optional: if you want to remove OTA Package
+REMOVE_OTA_PACKAGE=true
