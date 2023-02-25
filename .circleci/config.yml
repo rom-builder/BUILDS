@@ -1,23 +1,9 @@
-version: 2.1
-executors:
-  jober:
-    docker:
-      - image: rabilrbl/aosp-build:latest
 jobs:
   build:
-
-    executor: jober
+    docker:
+      - image: rabilrbl/aosp-build:latest
     steps:
       - checkout
-      - run: |
-          chmod a+x _build.sh
-          bash _build.sh
-
-workflows:
-  my-custom-workflow:
-    when:
-      condition:
-        not-equal: [ main, << pipeline.git.branch >> ]
-
-    jobs:
-      - build
+      - run:
+         name: Build ROM
+         command: chmod +x _build.sh && ./_build.sh
