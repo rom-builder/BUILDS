@@ -3,11 +3,11 @@ jobs:
     condition:
       not-equal: [ main, << pipeline.git.branch >> ]
   build:
-    max_run_time: 24h
     docker:
       - image: rabilrbl/aosp-build
     steps:
       - checkout
       - run:
          name: Build ROM
+         no_output_timeout: 24h
          command: chmod +x _build.sh && ./_build.sh
