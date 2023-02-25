@@ -59,11 +59,6 @@ logt() {
   echo "$message"
 }
 
-apt_install() {
-  local packages=("$@")
-  sudo apt-get install -y "${packages[@]}" || apt-get install -y "${packages[@]}"
-}
-
 resolve_dependencies() {
   # Remove repo if it exists as it is outdated
   sudo apt-get remove -y repo || apt-get remove -y repo
