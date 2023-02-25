@@ -1,7 +1,7 @@
 jobs:
   build:
     docker:
-      - image: rabilrbl/aosp-build:latest
+      - image: rabilrbl/aosp-build
     steps:
       - checkout
       - run:
