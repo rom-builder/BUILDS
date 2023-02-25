@@ -60,11 +60,16 @@ logt() {
 }
 
 resolve_dependencies() {
-  local packages=('repo' 'git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache')
+  # Remove repo if it exists as it is outdated
+  sudo apt-get remove -y repo
+  # Download latest repo from Google Storage
+  curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && chmod a+x /usr/local/bin/repo
+  local packages=('git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache')
   echo "Updating package lists..."
-  sudo apt-get update -y 
+  sudo apt-get update -y
   echo "Installing dependencies..."
   sudo apt-get install -y "${packages[@]}"
+  export USE_CCACHE=1
   export CCACHE_EXEC=$(which ccache)
   echo "Dependencies check complete."
 }
