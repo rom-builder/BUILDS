@@ -1,26 +1,23 @@
 version: 2.1
+executors:
+  jober:
+    docker:
+      - image: rabilrbl/aosp-build:latest
 jobs:
   build:
-    machine: true
-    resource_class: large
+
+    executor: jober
     steps:
       - checkout
-      - run:
-          name: "Remove git"
-          command: "rm -rf .git"
+      - run: |
+          chmod a+x _build.sh
+          bash _build.sh
 
-      - run:
-          name: "Build ROM"
-          command: "bash build.sh"
-          environment:
-            RELEASE_GITHUB_TOKEN: $RELEASE_GITHUB_TOKEN
-
-# Invoke jobs via workflows
-# # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  my_job:
+  my-custom-workflow:
     when:
       condition:
-        equal: "push/*"
+        not-equal: [ main, << pipeline.git.branch >> ]
+
     jobs:
       - build
