@@ -1,4 +1,7 @@
 jobs:
+  when:
+    condition:
+      not-equal: [ main, << pipeline.git.branch >> ]
   build:
     docker:
       - image: rabilrbl/aosp-build
