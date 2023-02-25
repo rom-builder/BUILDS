@@ -4,7 +4,7 @@ jobs:
       not-equal: [ main, << pipeline.git.branch >> ]
   build:
     docker:
-      - image: rabilrbl/aosp-build
+      - image: rabilrbl/aosp-build:beta
     steps:
       - checkout
       - run:
