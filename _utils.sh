@@ -68,7 +68,7 @@ resolve_dependencies() {
   echo "Installing dependencies..."
   sudo apt-get install -y "${packages[@]}" || apt-get install -y "${packages[@]}"
   # Download latest repo from Google Storage
-  curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && chmod a+x /usr/local/bin/repo
+  curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && chmod a+x /usr/local/bin/repo && export PATH="$PATH:/usr/local/bin"
   export USE_CCACHE=1
   export CCACHE_EXEC=$(which ccache)
   echo "Dependencies check complete."
