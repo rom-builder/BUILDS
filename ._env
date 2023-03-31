@@ -62,7 +62,7 @@ SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --no-tags --optimized-fetch 
 # BUILD_VANILLA_COMMAND=""
 
 # Optional: If you want to build GAPPS, set this 
-BUILD_GAPPS_COMMAND="source build/envsetup.sh && ./rom-build.sh vince -t userdebug"
+BUILD_GAPPS_COMMAND="source build/envsetup.sh && ./rom-build.sh vince -t user"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
