@@ -74,3 +74,5 @@ BUILD_GAPPS_COMMAND="source build/envsetup.sh && ./rom-build.sh vince -t user"
 # TG_TOKEN="" # Your bot token
 # TG_CHAT="" # Your chat id
 
+# Optional: if you want to remove OTA Package
+REMOVE_OTA_PACKAGE=true
