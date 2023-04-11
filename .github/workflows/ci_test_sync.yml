@@ -12,6 +12,7 @@ on:
       - "README.md"
       - "LICENSE"
       - "docs/**"
+  workflow_dispatch:
 
 jobs:
   shellcheck:
