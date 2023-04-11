@@ -21,11 +21,10 @@ if [ -z "$BUILD_VANILLA_COMMAND" ] && [ -z "$BUILD_GAPPS_COMMAND" ]; then
     exit 1
 fi
 
-echo "Starting build..."
 start_time=$(date +%s)
 
 # Install dependencies
-resolve_dependencies | tee resolve_dependencies_log.txt
+resolve_dependencies | tee resolve_dependencies.log
 
 # Setup git
 git_setup $GIT_NAME $GIT_EMAIL
@@ -50,7 +49,7 @@ if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
 fi
 
 # Call git_clone_json for repos with before_sync true
-git_clone_before_sync_log_file="clone_repos_before_sync_log.txt"
+git_clone_before_sync_log_file="clone_repos_before_sync.log"
 (git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file)
 if [ $? -ne 0 ]; then
     logt "Cloning repos for before_sync failed. Aborting."
@@ -66,13 +65,18 @@ fi
 
 # Sync source
 logt "Syncing source..."
-(eval  $SYNC_SOURCE_COMMAND | tee sync_source_log.txt)
+start_time_sync=$(date +%s)
+(eval  $SYNC_SOURCE_COMMAND | tee sync_source.log)
 if [ $? -ne 0 ]; then
     echo "Sync failed. Aborting."
     telegram_send_message "Sync failed. Aborting."
-    telegram_send_file sync_source_log.txt "Sync source log"
+    telegram_send_file sync_source.log "Sync source log"
     exit 1
 fi
+end_time_sync=$(date +%s)
+sync_time_taken=$(compute_build_time $start_time_sync $end_time_sync)
+logt "Sync completed in $sync_time_taken"
+
 
 # if POST_SYNC_SOURCE_COMMAND is set then run it
 if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
@@ -81,10 +85,10 @@ if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
 fi
 
 # Clone repos
-(git_clone_json $REPOS_JSON | tee clone_repos_log.txt)
+(git_clone_json $REPOS_JSON | tee clone_repos.log)
 if [ $? -ne 0 ]; then
     logt "Cloning repos failed. Aborting."
-    telegram_send_file clone_repos_log.txt "Clone repos log"
+    telegram_send_file clone_repos.log "Clone repos log"
     exit 1
 fi
 
@@ -97,6 +101,7 @@ fi
 # Build Vanilla
 # if BUILDS_VANILLA_SCRIPT is set else skip
 if [ -n "$BUILD_VANILLA_COMMAND" ]; then
+    start_time_vanilla=$(date +%s)
     logt "Building vanilla..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
@@ -105,16 +110,17 @@ if [ -n "$BUILD_VANILLA_COMMAND" ]; then
             logt "Vanilla build failed. Aborting."
         fi
     else
-        vanilla_log_file="vanilla_build_log.txt"
+        vanilla_log_file="vanilla_build.log"
         (eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file)
         if [ $? -ne 0 ]; then
             logt "Vanilla build failed. Aborting."
         fi
         telegram_send_file $vanilla_log_file "Vanilla build log"
     fi
-    # Rename *.zip to *-vanilla.zip if exists in RELEASE_OUT_DIR
-    # This is to fix temp error, gapps build replacing vanilla file
-    (cd $RELEASE_OUT_DIR && mv *.zip *-vanilla.zip || echo "No vanilla build found")
+    end_time_vanilla=$(date +%s)
+    vanilla_time_taken=$(compute_build_time $start_time_vanilla $end_time_vanilla)
+    logt "Vanilla build completed in $vanilla_time_taken"
+    (remove_ota_package) # remove ota package if present
 else
     echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
 fi
@@ -122,7 +128,8 @@ fi
 # Build GApps
 # if BUILDS_GAPPS_SCRIPT is set else skip
 if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-    gapps_log_file="gapps_build_log.txt"
+    start_time_gapps=$(date +%s)
+    gapps_log_file="gapps_build.log"
     logt "Building GApps..."
     # if LOG_OUTPUT is set to false then don't log output
     if [ "$LOG_OUTPUT" == "false" ]; then
@@ -137,8 +144,18 @@ if [ -n "$BUILD_GAPPS_COMMAND" ]; then
         fi
         telegram_send_file $gapps_log_file "GApps build log"
     fi
+    end_time_gapps=$(date +%s)
+    gapps_time_taken=$(compute_build_time $start_time_gapps $end_time_gapps)
+    logt "GApps build completed in $gapps_time_taken"
+    (remove_ota_package) # remove ota package if present
 else
     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
+fi
+
+# if POST_BUILD_COMMAND is set then run it
+if [ -n "$POST_BUILD_COMMAND" ]; then
+    echo "Running post-build command..."
+    eval $POST_BUILD_COMMAND
 fi
 
 # Release builds
@@ -151,12 +168,7 @@ fi
 end_time=$(date +%s)
 # convert seconds to hours, minutes and seconds
 time_taken=$(compute_build_time $start_time $end_time)
-telegram_send_message "Build finished in *$time_taken*" true
+telegram_send_message "Total time taken *$time_taken*"
+echo "Total time taken $time_taken"
 
-echo "Build finished in $time_taken"
-
-# if POST_BUILD_COMMAND is set then run it
-if [ -n "$POST_BUILD_COMMAND" ]; then
-    echo "Running post-build command..."
-    eval $POST_BUILD_COMMAND
-fi
+logt "Build finished."

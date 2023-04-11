@@ -60,11 +60,16 @@ logt() {
 }
 
 resolve_dependencies() {
-  local packages=('repo' 'git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache')
+  # Remove repo if it exists as it is outdated
+  sudo apt-get remove -y repo || apt-get remove -y repo
+  local packages=('git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache')
   echo "Updating package lists..."
-  sudo apt-get update -y 
+  sudo apt-get update -y || apt-get update -y
   echo "Installing dependencies..."
-  sudo apt-get install -y "${packages[@]}"
+  sudo apt-get install -y "${packages[@]}" || apt-get install -y "${packages[@]}"
+  # Download latest repo from Google Storage
+  sudo curl https://storage.googleapis.com/git-repo-downloads/repo -o /usr/local/bin/repo && sudo chmod a+x /usr/local/bin/repo
+  export USE_CCACHE=1
   export CCACHE_EXEC=$(which ccache)
   echo "Dependencies check complete."
 }
@@ -313,6 +318,23 @@ compute_build_time() {
     echo "$minutes m $seconds s"
   else
     echo "$seconds s"
+  fi
+}
+
+remove_ota_package() {
+  # if REMOVE_OTA_PACKAGE is not set or is false, return
+  if [ -z "$REMOVE_OTA_PACKAGE" ] || [ "$REMOVE_OTA_PACKAGE" == "false" ]; then
+    echo "REMOVE_OTA_PACKAGE is not set or is false. Skipping removal of OTA package."
+    return
+  fi
+  # Remove OTA package if exists with name *_$DEVICE-ota-*.$USER.zip
+  local ota_package=$(ls $RELEASE_OUT_DIR/*_$DEVICE-ota-*.$USER.zip)
+  if [ -n "$ota_package" ]; then
+    base_filename=$(basename $ota_package)
+    echo "Removing OTA package $base_filename"
+    rm -f $ota_package
+  else
+    echo "No OTA package found to remove."
   fi
 }
 
