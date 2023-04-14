@@ -41,7 +41,7 @@ RELEASE_OUT_DIR="out/target/product/$DEVICE"
 # PRE_SETUP_SOURCE_COMMAND=""
 
 # Required:
-SETUP_SOURCE_COMMAND="repo init -u https://github.com/bananadroid/android_manifest.git -b 13"
+SETUP_SOURCE_COMMAND="repo init -u https://github.com/bananadroid/android_manifest.git -b 13 --git-lfs"
 
 # Optional: If you have any post command to run after setting up source
 # POST_SETUP_SOURCE_COMMAND=""
