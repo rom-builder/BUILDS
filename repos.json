@@ -1,10 +1,19 @@
 {
   "repos": [
     {
-      "repo": "https://github.com/rom-builder/local_manifest.git",
-      "branch": "bananadroid-13.0",
-      "dir": ".repo/local_manifests",
+      "repo": "https://github.com/bananadroid-devices/device_xiaomi_vince.git",
+      "dir": "device/xiaomi/vince",
       "before_sync": true
-    }
+    },
+    {
+      "repo": "https://github.com/bananadroid-devices/vendor_xiaomi_vince.git",
+      "dir": "vendor/xiaomi/vince",
+      "before_sync": true
+    },
+    {
+      "repo": "https://github.com/bananadroid-devices/kernel_xiaomi_vince.git",
+      "dir": "kernel/xiaomi/vince",
+      "before_sync": true
+    },
   ]
 }
