@@ -64,7 +64,7 @@ SYNC_SOURCE_COMMAND="repo sync -c -j$(nproc --all) --force-sync --no-clone-bundl
 # BUILD_VANILLA_COMMAND=". build/envsetup.sh && unset WITH_GAPPS && lunch banana_$DEVICE-user && m banana"
 
 # GApps build command
-BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch banana_vince-user && export WITH_GAPPS=true && mka bacon"
+BUILD_GAPPS_COMMAND="build/envsetup.sh && lunch banana_$DEVICE-user && export WITH_GAPPS=true && m banana"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
