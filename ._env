@@ -3,9 +3,9 @@ DEVICE="vince"
 ROM_NAME="BananaDroid"
 
 # Required: git username
-GIT_NAME="ROMBUILDER"
+GIT_NAME="rabilrbl"
 # Required: git email
-GIT_EMAIL="rom-builder@rest.eu.org"
+GIT_EMAIL="rabil@techie.com"
 
 # Required: Personal Access Token from GitHub with permissions repo, admin:repo_hook, user
 # Better set it as a secret in your GitHub repo settings
