@@ -14,6 +14,18 @@
       "repo": "https://github.com/bananadroid-devices/kernel_xiaomi_vince.git",
       "dir": "kernel/xiaomi/vince",
       "before_sync": true
+    },
+    {
+      "repo": "https://gitlab.com/anandhan07/aosp-clang.git",
+      "dir": "prebuilts/clang/host/linux-x86/clang-aosp",
+      "branch": "17",
+      "before_sync": false
+    },
+    {
+      "repo": "https://github.com/iusmac/RevampedFMRadio.git",
+      "dir": "packages/apps/RevampedFMRadio",
+      "branch": "qcom",
+      "before_sync": false
     }
   ]
 }
