@@ -14,6 +14,6 @@
       "repo": "https://github.com/bananadroid-devices/kernel_xiaomi_vince.git",
       "dir": "kernel/xiaomi/vince",
       "before_sync": true
-    },
+    }
   ]
 }
