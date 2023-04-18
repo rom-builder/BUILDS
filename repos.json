@@ -2,7 +2,7 @@
   "repos": [
     {
       "repo": "https://github.com/anandhan07/local_manifest.git",
-      "branch": "AOSPA-topaz",
+      "branch": "risingOS-13.0",
       "dir": ".repo/local_manifests",
       "before_sync": true
     }
