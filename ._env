@@ -15,7 +15,7 @@ GIT_EMAIL="rom-builder@rest.eu.org"
 GITHUB_RELEASE_REPO="rom-builder/$DEVICE-$ROM_NAME"
 
 # Required: To upload the build, set this
-RELEASE_FILES_PATTERN="boot.img"
+RELEASE_FILES_PATTERN="*.zip|*.md5sum|*.sha256sum|boot.img"
 
 # Required: Repos to clone
 # Example repos.json:
@@ -64,7 +64,7 @@ SYNC_SOURCE_COMMAND="repo sync -c --no-clone-bundle --no-tags --optimized-fetch 
 # BUILD_VANILLA_COMMAND="bash vanilla.sh || . build/envsetup.sh && brunch $DEVICE"
 
 # GApps build command
-BUILD_GAPPS_COMMAND="source build/envsetup.sh && lunch aosp_vince-user && mka bootimage"
+BUILD_GAPPS_COMMAND="source build/envsetup.sh && lunch aosp_vince-user && mka bacon"
 
 # Optional: If you have any post command to run after building
 # POST_BUILD_COMMAND=""
