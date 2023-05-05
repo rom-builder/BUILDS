@@ -11,7 +11,8 @@
       "before_sync": true
     },
     {
-      "repo": "https://github.com/bananadroid-devices/kernel_xiaomi_vince.git",
+      "repo": "https://github.com/GhostMaster69-dev/android_kernel_xiaomi_vince.git",
+      "branch": "master",
       "dir": "kernel/xiaomi/vince",
       "before_sync": true
     },
