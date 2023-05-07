@@ -62,7 +62,7 @@ logt() {
 resolve_dependencies() {
   # Remove repo if it exists as it is outdated
   sudo apt-get remove -y repo || apt-get remove -y repo
-  local packages=('git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache')
+  local packages=('git-core' 'gnupg' 'flex' 'bison' 'build-essential' 'zip' 'curl' 'zlib1g-dev' 'libc6-dev-i386' 'libncurses5' 'lib32ncurses5-dev' 'x11proto-core-dev' 'libx11-dev' 'lib32z1-dev' 'libgl1-mesa-dev' 'libxml2-utils' 'xsltproc' 'unzip' 'openssl' 'libssl-dev' 'fontconfig' 'jq' 'openjdk-8-jdk' 'gperf' 'python-is-python3' 'ccache' 'sshpass')
   echo "Updating package lists..."
   sudo apt-get update -y || apt-get update -y
   echo "Installing dependencies..."
@@ -286,7 +286,12 @@ github_release() {
 
   # Upload each file that matches the pattern
   for file in $(ls -A $RELEASE_OUT_DIR | grep -E "$pattern"); do
-    echo "Uploading $file..."
+    # if SF_UPLOAD and file is zip
+    if [ "$SF_UPLOAD" == "true" ] && [[ "$file" == *.zip ]]; then
+      echo "Uploading $file to SourceForge..."
+      (sourceforge_upload -f "$file -v $tag")
+    fi
+    echo "Uploading $file to Github..."
     file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$file")
     file_url=$(echo $file_release | jq -r '.browser_download_url')
     # if file_url is null or empty
@@ -337,6 +342,43 @@ remove_ota_package() {
     echo "No OTA package found to remove."
   fi
 }
+
+# Function to upload release files to sourceforge
+sourceforge_upload() {
+  # Check if $SF_UPLOAD is set to true
+  if [ -z "$SF_UPLOAD" ] || [ "$SF_UPLOAD" == "false" ]; then
+    echo "SF_UPLOAD is not set or is false. Skipping upload to sourceforge."
+    return
+  fi
+
+  # Check if $SF_USER, $SF_HOST, $SF_PASS, $SF_PROJECT and $SF_DIR are set
+  if [ -z "$SF_USER" ] || [ -z "$SF_HOST" ] || [ -z "$SF_PASS" ] || [ -z "$SF_PROJECT" ] || [ -z "$SF_DIR" ] || [ -z "$SF_PATH" ]; then
+    logt "SF_USER, SF_HOST, SF_PASS, SF_PROJECT and SF_DIR must be set to upload to sourceforge."
+    return
+  fi
+
+  while [[ "$#" -gt 0 ]]; do
+    case $1 in
+      -f|--file) file="$2"; shift ;;
+      -v|--version) version="$2"; shift ;;
+      *) echo "Unknown parameter passed: $1"; exit 1 ;;
+    esac
+    shift
+  done
+
+  # Upload file to sourceforge
+  logt "Uploading $file to sourceforge..."
+  sshpass -e "SF_PASS" scp -o StrictHostKeyChecking=no $file $SF_USER@$SF_HOST:$SF_PATH
+  if [$? -eq 0]; then
+    # Get download URL
+    local file_name=$(basename $file)
+    local download_url="https://sourceforge.net/projects/$SF_PROJECT/files/$SF_DIR/$file_name/download"
+    logt "Sourceforge download URL: $download_url"
+  else
+    logt "Failed to upload $file to sourceforge."
+  fi
+}
+
 
 # Export functions
 export -f resolve_dependencies git_setup git_clone git_clone_json clean_build github_release telegram_send_message telegram_send_file update_tg logt
