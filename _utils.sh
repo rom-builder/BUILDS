@@ -369,7 +369,7 @@ sourceforge_upload() {
   # Upload file to sourceforge
   logt "Uploading $file to sourceforge..."
   sshpass -e "SF_PASS" scp -o StrictHostKeyChecking=no $file $SF_USER@$SF_HOST:$SF_PATH
-  if [$? -eq 0]; then
+  if [ $? -eq 0 ]; then
     # Get download URL
     local file_name=$(basename $file)
     local download_url="https://sourceforge.net/projects/$SF_PROJECT/files/$SF_DIR/$file_name/download"
