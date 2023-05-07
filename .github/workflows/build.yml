@@ -30,6 +30,9 @@ on:
       TG_CHAT:
         description: 'Telegram Chat ID'
         required: true
+      SF_PASS:
+        description: 'SourceForge Password'
+        required: false
 
 # queue up builds to prevent failures on progress of other builds
 concurrency:
