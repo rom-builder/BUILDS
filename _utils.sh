@@ -289,7 +289,7 @@ github_release() {
     # if SF_UPLOAD and file is zip
     if [ "$SF_UPLOAD" == "true" ] && [[ "$file" == *.zip ]]; then
       echo "Uploading $file to SourceForge..."
-      (sourceforge_upload -f "$file -v $tag")
+      (sourceforge_upload -f "$RELEASE_OUT_DIR/$file" -v $tag)
     fi
     echo "Uploading $file to Github..."
     file_release=$(curl -s -H "Authorization: Bearer $token" -H "Content-Type: application/octet-stream" -T "$RELEASE_OUT_DIR/$file" "https://uploads.github.com/repos/$repo/releases/$release_id/assets?name=$file")
