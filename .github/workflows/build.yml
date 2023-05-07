@@ -77,7 +77,7 @@ jobs:
           TG_TOKEN: ${{ secrets.TG_TOKEN }}
           TG_CHAT: ${{ secrets.TG_CHAT }}
           GITHUB_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-
+          SF_PASS: ${{ secrets.SF_PASS }}
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         if: always()
