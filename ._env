@@ -80,9 +80,9 @@ BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch banana_$DEVICE-user && export 
 REMOVE_OTA_PACKAGE=true
 
 # Optional: if you want to upload to sourceforge
-SF_UPLOAD=false
+SF_UPLOAD=true
 # Mandatory if SF_UPLOAD is true
-# SF_USER="" # Sourceforge username
+SF_USER="rabilrbl" # Sourceforge username
 # SF_PASS="" # Sourceforge password: keep it secret in your GitHub repo settings or as environment variable
 SF_PROJECT="$ROM_NAME" # Sourceforge project name
 SF_DIR="$DEVICE" # Sourceforge directory at project
