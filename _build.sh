@@ -29,136 +29,136 @@ resolve_dependencies | tee resolve_dependencies.log
 # Setup git
 git_setup $GIT_NAME $GIT_EMAIL
 
-# # Cleanup old builds
-# clean_build $RELEASE_OUT_DIR
+# Cleanup old builds
+clean_build $RELEASE_OUT_DIR
 
-# # if PRE_SETUP_SOURCE_COMMAND is set then run it
-# if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
-#     echo "Running pre-setup source command..."
-#     eval $PRE_SETUP_SOURCE_COMMAND
-# fi
+# if PRE_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running pre-setup source command..."
+    eval $PRE_SETUP_SOURCE_COMMAND
+fi
 
-# # Setup source
-# echo "Setting up source..."
-# eval $SETUP_SOURCE_COMMAND
+# Setup source
+echo "Setting up source..."
+eval $SETUP_SOURCE_COMMAND
 
-# # if POST_SETUP_SOURCE_COMMAND is set then run it
-# if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
-#     echo "Running post-setup source command..."
-#     eval $POST_SETUP_SOURCE_COMMAND
-# fi
+# if POST_SETUP_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SETUP_SOURCE_COMMAND" ]; then
+    echo "Running post-setup source command..."
+    eval $POST_SETUP_SOURCE_COMMAND
+fi
 
-# # Call git_clone_json for repos with before_sync true
-# git_clone_before_sync_log_file="clone_repos_before_sync.log"
-# (git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file)
-# if [ $? -ne 0 ]; then
-#     logt "Cloning repos for before_sync failed. Aborting."
-#     telegram_send_file $git_clone_before_sync_log_file "Cloning repos log"
-#     exit 1
-# fi
+# Call git_clone_json for repos with before_sync true
+git_clone_before_sync_log_file="clone_repos_before_sync.log"
+(git_clone_json $REPOS_JSON true | tee $git_clone_before_sync_log_file)
+if [ $? -ne 0 ]; then
+    logt "Cloning repos for before_sync failed. Aborting."
+    telegram_send_file $git_clone_before_sync_log_file "Cloning repos log"
+    exit 1
+fi
 
-# # if PRE_SYNC_SOURCE_COMMAND is set then run it
-# if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
-#     echo "Running pre-sync source command..."
-#     eval $PRE_SYNC_SOURCE_COMMAND
-# fi
+# if PRE_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$PRE_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running pre-sync source command..."
+    eval $PRE_SYNC_SOURCE_COMMAND
+fi
 
-# # Sync source
-# logt "Syncing source..."
-# start_time_sync=$(date +%s)
-# (eval  $SYNC_SOURCE_COMMAND | tee sync_source.log)
-# if [ $? -ne 0 ]; then
-#     echo "Sync failed. Aborting."
-#     telegram_send_message "Sync failed. Aborting."
-#     telegram_send_file sync_source.log "Sync source log"
-#     exit 1
-# fi
-# end_time_sync=$(date +%s)
-# sync_time_taken=$(compute_build_time $start_time_sync $end_time_sync)
-# logt "Sync completed in $sync_time_taken"
+# Sync source
+logt "Syncing source..."
+start_time_sync=$(date +%s)
+(eval  $SYNC_SOURCE_COMMAND | tee sync_source.log)
+if [ $? -ne 0 ]; then
+    echo "Sync failed. Aborting."
+    telegram_send_message "Sync failed. Aborting."
+    telegram_send_file sync_source.log "Sync source log"
+    exit 1
+fi
+end_time_sync=$(date +%s)
+sync_time_taken=$(compute_build_time $start_time_sync $end_time_sync)
+logt "Sync completed in $sync_time_taken"
 
 
-# # if POST_SYNC_SOURCE_COMMAND is set then run it
-# if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
-#     echo "Running post-sync source command..."
-#     eval $POST_SYNC_SOURCE_COMMAND
-# fi
+# if POST_SYNC_SOURCE_COMMAND is set then run it
+if [ -n "$POST_SYNC_SOURCE_COMMAND" ]; then
+    echo "Running post-sync source command..."
+    eval $POST_SYNC_SOURCE_COMMAND
+fi
 
-# # Clone repos
-# (git_clone_json $REPOS_JSON | tee clone_repos.log)
-# if [ $? -ne 0 ]; then
-#     logt "Cloning repos failed. Aborting."
-#     telegram_send_file clone_repos.log "Clone repos log"
-#     exit 1
-# fi
+# Clone repos
+(git_clone_json $REPOS_JSON | tee clone_repos.log)
+if [ $? -ne 0 ]; then
+    logt "Cloning repos failed. Aborting."
+    telegram_send_file clone_repos.log "Clone repos log"
+    exit 1
+fi
 
-# # if PRE_BUILD_COMMAND is set then run it
-# if [ -n "$PRE_BUILD_COMMAND" ]; then
-#     echo "Running pre-build command..."
-#     eval $PRE_BUILD_COMMAND
-# fi
+# if PRE_BUILD_COMMAND is set then run it
+if [ -n "$PRE_BUILD_COMMAND" ]; then
+    echo "Running pre-build command..."
+    eval $PRE_BUILD_COMMAND
+fi
 
-# # Build Vanilla
-# # if BUILDS_VANILLA_SCRIPT is set else skip
-# if [ -n "$BUILD_VANILLA_COMMAND" ]; then
-#     start_time_vanilla=$(date +%s)
-#     logt "Building vanilla..."
-#     # if LOG_OUTPUT is set to false then don't log output
-#     if [ "$LOG_OUTPUT" == "false" ]; then
-#         (eval $BUILD_VANILLA_COMMAND)
-#         if [ $? -ne 0 ]; then
-#             logt "Vanilla build failed. Aborting."
-#         fi
-#     else
-#         vanilla_log_file="vanilla_build.log"
-#         (eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file)
-#         if [ $? -ne 0 ]; then
-#             logt "Vanilla build failed. Aborting."
-#         fi
-#         telegram_send_file $vanilla_log_file "Vanilla build log"
-#         telegram_send_file vince.json "Vanilla Build JSON"
-#     fi
-#     end_time_vanilla=$(date +%s)
-#     vanilla_time_taken=$(compute_build_time $start_time_vanilla $end_time_vanilla)
-#     logt "Vanilla build completed in $vanilla_time_taken"
-#     (remove_ota_package) # remove ota package if present
-# else
-#     echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
-# fi
+# Build Vanilla
+# if BUILDS_VANILLA_SCRIPT is set else skip
+if [ -n "$BUILD_VANILLA_COMMAND" ]; then
+    start_time_vanilla=$(date +%s)
+    logt "Building vanilla..."
+    # if LOG_OUTPUT is set to false then don't log output
+    if [ "$LOG_OUTPUT" == "false" ]; then
+        (eval $BUILD_VANILLA_COMMAND)
+        if [ $? -ne 0 ]; then
+            logt "Vanilla build failed. Aborting."
+        fi
+    else
+        vanilla_log_file="vanilla_build.log"
+        (eval $BUILD_VANILLA_COMMAND | tee $vanilla_log_file)
+        if [ $? -ne 0 ]; then
+            logt "Vanilla build failed. Aborting."
+        fi
+        telegram_send_file $vanilla_log_file "Vanilla build log"
+        telegram_send_file vince.json "Vanilla Build JSON"
+    fi
+    end_time_vanilla=$(date +%s)
+    vanilla_time_taken=$(compute_build_time $start_time_vanilla $end_time_vanilla)
+    logt "Vanilla build completed in $vanilla_time_taken"
+    (remove_ota_package) # remove ota package if present
+else
+    echo "BUILDS_VANILLA_COMMAND is not set. Skipping vanilla build."
+fi
 
-# # Build GApps
-# # if BUILDS_GAPPS_SCRIPT is set else skip
-# if [ -n "$BUILD_GAPPS_COMMAND" ]; then
-#     start_time_gapps=$(date +%s)
-#     gapps_log_file="gapps_build.log"
-#     logt "Building GApps..."
-#     # if LOG_OUTPUT is set to false then don't log output
-#     if [ "$LOG_OUTPUT" == "false" ]; then
-#         (eval $BUILD_GAPPS_COMMAND)
-#         if [ $? -ne 0 ]; then
-#             logt "GApps build failed. Aborting."
-#         fi
-#     else
-#         (eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file)
-#         if [ $? -ne 0 ]; then
-#             logt "GApps build failed. Aborting."
-#         fi
-#         telegram_send_file $gapps_log_file "GApps build log"
-#         telegram_send_file vince.json "GApps Build JSON"
-#     fi
-#     end_time_gapps=$(date +%s)
-#     gapps_time_taken=$(compute_build_time $start_time_gapps $end_time_gapps)
-#     logt "GApps build completed in $gapps_time_taken"
-#     (remove_ota_package) # remove ota package if present
-# else
-#     echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
-# fi
+# Build GApps
+# if BUILDS_GAPPS_SCRIPT is set else skip
+if [ -n "$BUILD_GAPPS_COMMAND" ]; then
+    start_time_gapps=$(date +%s)
+    gapps_log_file="gapps_build.log"
+    logt "Building GApps..."
+    # if LOG_OUTPUT is set to false then don't log output
+    if [ "$LOG_OUTPUT" == "false" ]; then
+        (eval $BUILD_GAPPS_COMMAND)
+        if [ $? -ne 0 ]; then
+            logt "GApps build failed. Aborting."
+        fi
+    else
+        (eval $BUILD_GAPPS_COMMAND | tee $gapps_log_file)
+        if [ $? -ne 0 ]; then
+            logt "GApps build failed. Aborting."
+        fi
+        telegram_send_file $gapps_log_file "GApps build log"
+        telegram_send_file vince.json "GApps Build JSON"
+    fi
+    end_time_gapps=$(date +%s)
+    gapps_time_taken=$(compute_build_time $start_time_gapps $end_time_gapps)
+    logt "GApps build completed in $gapps_time_taken"
+    (remove_ota_package) # remove ota package if present
+else
+    echo "BUILDS_GAPPS_COMMAND is not set. Skipping GApps build."
+fi
 
-# # if POST_BUILD_COMMAND is set then run it
-# if [ -n "$POST_BUILD_COMMAND" ]; then
-#     echo "Running post-build command..."
-#     eval $POST_BUILD_COMMAND
-# fi
+# if POST_BUILD_COMMAND is set then run it
+if [ -n "$POST_BUILD_COMMAND" ]; then
+    echo "Running post-build command..."
+    eval $POST_BUILD_COMMAND
+fi
 
 # Release builds
 tag=$(date +'v%d-%m-%Y-%H%M')
