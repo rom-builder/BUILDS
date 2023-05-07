@@ -84,7 +84,7 @@ SF_UPLOAD=true
 # Mandatory if SF_UPLOAD is true
 SF_USER="rabilrbl" # Sourceforge username
 # SF_PASS="" # Sourceforge password: keep it secret in your GitHub repo settings or as environment variable
-SF_PROJECT="$ROM_NAME" # Sourceforge project name
+SF_PROJECT="bananadroid" # Sourceforge project name
 SF_DIR="$DEVICE" # Sourceforge directory at project
 SF_HOST="frs.sourceforge.net" # Sourceforge host.
 SF_PATH="/home/pfs/project/$SF_PROJECT/$SF_DIR/" # Full Sourceforge path for uploading with scp
