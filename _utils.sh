@@ -400,8 +400,7 @@ sourceforge_upload() {
 
   # Upload file to sourceforge
   logt "Uploading $file to sourceforge..."
-  SSHPASS=$SF_PASS
-  sshpass -e scp -o StrictHostKeyChecking=no $file $SF_USER@$SF_HOST:$SF_PATH
+  sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no $file $SF_USER@$SF_HOST:$SF_PATH
   if [ $? -eq 0 ]; then
     # Get download URL
     local file_name=$(basename $file)
