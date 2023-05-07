@@ -352,10 +352,13 @@ sourceforge_upload() {
   fi
 
   # Check if $SF_USER, $SF_HOST, $SF_PASS, $SF_PROJECT and $SF_DIR are set
-  if [ -z "$SF_USER" ] || [ -z "$SF_HOST" ] || [ -z "$SF_PASS" ] || [ -z "$SF_PROJECT" ] || [ -z "$SF_DIR" ] || [ -z "$SF_PATH" ]; then
-    logt "SF_USER, SF_HOST, SF_PASS, SF_PROJECT and SF_DIR must be set to upload to sourceforge."
-    return
-  fi
+  local required_sf_vars=(SF_USER SF_HOST SF_PASS SF_PROJECT SF_DIR SF_PATH)
+  for var in "${required_sf_vars[@]}"; do
+    if [ -z "${!var}" ]; then
+      logt "$var is not set. Aborting upload to sourceforge."
+      return
+    fi
+  done
 
   while [[ "$#" -gt 0 ]]; do
     case $1 in
