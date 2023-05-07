@@ -329,9 +329,9 @@ github_release() {
       echo "File release response: $file_release"
       return
     else
-      echo "File URL: $file_url"
+      echo "GitHub URL: $file_url"
+      telegram_send_message "GitHub: [$file]($file_url)" true
     fi
-    telegram_send_message "[$file]($file_url)" true
   done
 
   telegram_send_message "Uploaded files to [release $tag in $repo]($release_url)" true
@@ -399,13 +399,14 @@ sourceforge_upload() {
   done
 
   # Upload file to sourceforge
-  logt "Uploading $file to sourceforge..."
+  local file_name=$(basename $file)
+  echo "Uploading $file_name to Sourceforge..."
   sshpass -p "$SF_PASS" scp -o StrictHostKeyChecking=no $file $SF_USER@$SF_HOST:$SF_PATH
   if [ $? -eq 0 ]; then
     # Get download URL
-    local file_name=$(basename $file)
     local download_url="https://sourceforge.net/projects/$SF_PROJECT/files/$SF_DIR/$file_name/download"
-    logt "Sourceforge download URL: $download_url"
+    echo "Sourceforge download URL: $download_url"
+    telegram_send_message "Sourceforge: [$file_name]($download_url)" true
   else
     logt "Failed to upload $file to sourceforge."
   fi
