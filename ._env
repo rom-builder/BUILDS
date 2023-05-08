@@ -80,11 +80,11 @@ BUILD_GAPPS_COMMAND=". build/envsetup.sh && lunch aosp_vince-user && mka bacon -
 REMOVE_OTA_PACKAGE=true
 
 # Optional: if you want to upload to sourceforge
-SF_UPLOAD=false
+SF_UPLOAD=true
 # Mandatory if SF_UPLOAD is true
-# SF_USER="" # Sourceforge username
+SF_USER="rabilrbl" # Sourceforge username
 # SF_PASS="" # Sourceforge password: keep it secret in your GitHub repo settings or as environment variable
-SF_PROJECT="$ROM_NAME" # Sourceforge project name
-SF_DIR="$DEVICE" # Sourceforge directory at project
+SF_PROJECT="pixelos-vince" # Sourceforge project name
+SF_DIR="A13" # Sourceforge directory at project
 SF_HOST="frs.sourceforge.net" # Sourceforge host.
 SF_PATH="/home/pfs/project/$SF_PROJECT/$SF_DIR/" # Full Sourceforge path for uploading with scp
